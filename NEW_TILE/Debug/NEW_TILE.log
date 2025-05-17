@@ -1,0 +1,13 @@
+﻿  collisionManager.cpp
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(8,17): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(9,17): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(95,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(104,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(167,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(177,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(231,14): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(281,14): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(339,14): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\det92\Documents\2025_PROJ\NEW_TILE\collisionManager.cpp(364,18): warning C4018: '>=': signed/unsigned mismatch
+NEW_TILE\Debug\enemies.obj : warning LNK4042: object specified more than once; extras ignored
+  NEW_TILE.vcxproj -> C:\Users\det92\Documents\2025_PROJ\NEW_TILE\Debug\NEW_TILE.exe

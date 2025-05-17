@@ -1,0 +1,143 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:collisionManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\enemies.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:enemies.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:collisionManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\rand.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:rand.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BA7A2CE9-DBA6-4216-BE9F-383CF6EEA383}|NEW_TILE.vcxproj|solutionrelative:player.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "enemies.cpp",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\enemies.cpp",
+              "RelativeDocumentMoniker": "enemies.cpp",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\enemies.cpp",
+              "RelativeToolTip": "enemies.cpp",
+              "ViewState": "AgIAAP8AAAAAAAAAAAAAAA0BAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-17T07:16:48.756Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "rand.cpp",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\rand.cpp",
+              "RelativeDocumentMoniker": "rand.cpp",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\rand.cpp",
+              "RelativeToolTip": "rand.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-17T07:16:37.279Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "player.cpp",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.cpp",
+              "RelativeDocumentMoniker": "player.cpp",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.cpp",
+              "RelativeToolTip": "player.cpp",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAAAI4AAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-13T06:38:31.633Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "collisionManager.h",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.h",
+              "RelativeDocumentMoniker": "collisionManager.h",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.h",
+              "RelativeToolTip": "collisionManager.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-05-13T06:43:33.169Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "collisionManager.cpp",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.cpp",
+              "RelativeDocumentMoniker": "collisionManager.cpp",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\collisionManager.cpp*",
+              "RelativeToolTip": "collisionManager.cpp*",
+              "ViewState": "AgIAAJUBAAAAAAAAAAAAAKYBAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-05-13T06:37:48.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAABEAAAAAAAAAAAAvwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-22T01:14:46.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "player.h",
+              "DocumentMoniker": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.h",
+              "RelativeDocumentMoniker": "player.h",
+              "ToolTip": "C:\\Users\\det92\\Documents\\2025_PROJ\\NEW_TILE\\player.h",
+              "RelativeToolTip": "player.h",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAADgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-05-11T02:12:04.546Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

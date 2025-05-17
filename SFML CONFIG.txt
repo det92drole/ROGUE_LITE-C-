@@ -1,0 +1,29 @@
+SFML CONFIG:
+
+
+ALL CONFIG: 
+
+C++; GENERAL; ADDITIONAL INCLUDE DIRECTORIES:
+$(SolutionDir)External\SFML\include
+
+LINKER; GENERAL; ADDITIONAL LIBARY DIRECTORIES:
+$(SolutionDir)External\SFML\lib
+
+
+RELEASE: 
+LINKER; INPUT; ADDITIONAL DEPENDENCIES:
+sfml-graphics.lib
+sfml-window.lib
+sfml-audio.lib
+sfml-network.lib
+sfml-system.lib
+
+DEBUG: 
+LINKER; INPUT; ADDITIONAL DEPENDENCIES:
+sfml-graphics-d.lib
+sfml-window-d.lib
+sfml-audio-d.lib
+sfml-network-d.lib
+sfml-system-d.lib
+
+NOTE: DEBUG in VSCODE must be set to x86
