@@ -1,0 +1,20 @@
+# Ignore build artifacts
+build/
+*.exe
+*.o
+*.obj
+*.log
+*.pdb
+
+# Ignore SFML libraries (if included locally)
+SFML/
+*.dll
+*.lib
+*.a
+
+# Ignore CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
