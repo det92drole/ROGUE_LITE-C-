@@ -15,6 +15,11 @@ SFML/
 Release/
 *.ilk
 
+Debug/
+*.ilk
+*.tlog
+*.idb
+
 # Ignore CMake files
 CMakeFiles/
 CMakeCache.txt
