@@ -11,12 +11,10 @@ extern bool spaceBar;
 
 class KeyManager {
 public:
-    KeyManager() {
-        std::cout<<"listening for keystrokes" << std::endl;
-    }
-    void update();  // Check for key presses
-
-
+    KeyManager();
+    void update(sf::Event& event);  // Check for key presses
+    bool getEsc() { return escape; }
+    void setEsc(bool val) { escape = val; }
 private:
-
+    bool escape;
 };

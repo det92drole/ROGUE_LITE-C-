@@ -149,6 +149,7 @@
     <ClCompile Include="enemies.h" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="gameState.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="rand.cpp" />
     <ClCompile Include="render.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="collisionManager.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="keyManager.h" />
+    <ClInclude Include="gameState.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="rand.h" />
     <ClInclude Include="render.h" />

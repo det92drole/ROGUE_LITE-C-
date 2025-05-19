@@ -7,9 +7,13 @@ bool moveDown = false;
 bool spaceBar = false;
 float moveSpeed = 500.0f;
 
-void KeyManager::update() {
+KeyManager::KeyManager():escape(false){
+    std::cout << "listening for keystrokes" << std::endl;
+}
 
-    moveLeft = moveDown = moveUp = moveRight = spaceBar = false;
+void KeyManager::update(sf::Event& event) {
+
+    moveLeft = moveDown = moveUp = moveRight = spaceBar= false;
 
     // Check for key presses and update windowManager viewPort
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -33,4 +37,10 @@ void KeyManager::update() {
         //
         spaceBar = true;
     }
+
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+        escape = true;
+        //std::cout << "ESCAPE PRESSED" << std::endl;
+    }
 }
+    

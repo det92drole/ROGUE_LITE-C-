@@ -8,6 +8,7 @@
 #include "enemies.h"
 #include "collisionManager.h"
 #include "debug.h"
+#include "gameState.h"
 
 int main() {
     std::srand(std::time(0));  // seed rand with time stamp
@@ -20,6 +21,7 @@ int main() {
 
     Player player; //created AFTER grid and spawn determined by printGrid();
     Enemy enemy;
+    GameManager game;
 
     enemy.spawnEnemies();
 
@@ -32,19 +34,16 @@ int main() {
    
     while (window.isOpen())
     {
-        windowManager.processEvents();
         sf::Time dt = clock.restart();
-
-        keyManager.update();  // Check for key presses
-        player.update(dt, moveLeft, moveRight, moveUp, moveDown, spaceBar);
-        collisions(player, exitX, exitY, player.getDirection(), enemy, dt);
-        enemy.update(dt);
+        windowManager.processEvents(keyManager); //key manager called here
+        game.gameCheck(player, exitX, exitY, player.getDirection(), enemy, dt, moveLeft, moveRight, moveUp, moveDown, spaceBar, keyManager);
 
         //draw here
         window.clear(backgroundColor);
         renderer.drawGrid(); 
         player.draw(window);
         enemy.draw(window);
+        //draw menu over game
 
         windowManager.playerView(player.getPosX(), player.getPosY(), squareSize); //camera centered on player
         window.display();

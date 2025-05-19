@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "keyManager.h"
 
 //class Player;
 
@@ -8,7 +9,7 @@ public:
     // Constructor initializes the window
     WindowManager(int width, int height, const std::string& title);
     //ViewPort
-    void processEvents();
+    void processEvents(KeyManager& keyManager);
     void updateView(bool left, bool right, bool up, bool down, float moveSpeed, float dt);  // Move the viewport
     //void applyView();  // Apply the updated view to the window
 

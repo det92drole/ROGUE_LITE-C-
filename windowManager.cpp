@@ -9,9 +9,11 @@ WindowManager::WindowManager(int width, int height, const std::string& title)
     window.setView(view);  // Apply the view
 }
 
-void WindowManager::processEvents() {
+void WindowManager::processEvents(KeyManager& keyManager) {
     sf::Event event;
     while (window.pollEvent(event)) {
+        keyManager.update(event);  // Check for key presses
+
         if (event.type == sf::Event::Closed) {
             window.close();
         }

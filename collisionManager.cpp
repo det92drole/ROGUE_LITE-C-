@@ -208,23 +208,21 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 				int tempY = static_cast<int>(it->getPosY());
 				it->setSpeed(0); //movement no longer determined by speed
 
-
 				float xT = player.getPosX() + (((player.getSprite().getGlobalBounds().width / 100.0f) / 2.0f) - ((it->getWidthPx() / 100.0f) / 2.0f));
 				float yT = player.getPosY() + (((player.getSprite().getGlobalBounds().height / 100.0f) / 2.0f) - ((it->getHeightPx() / 100.0f) / 2.0f));
 				float vecx = xT - it->getPosX();
 				float vecy = yT - it->getPosY();
 				float hypotenuse = std::hypot(vecx, vecy);
+
 				if (hypotenuse != 0) {
 					float dirX = vecx / hypotenuse;
 					float dirY = vecy / hypotenuse;
 					it->setPosX(it->getPosX() + dirX*deltaTime.asSeconds());
 					it->setPosY(it->getPosY() + dirY*deltaTime.asSeconds());
-					std::cout << "dirx: " << dirX << " dirY: " << dirY << std::endl;
-
+					//std::cout << "dirx: " << dirX << " dirY: " << dirY << std::endl;
 				}
 				//std::cout <<"enemy id: "<<it->getID()<< " enemy x: " << it->getPosX() << " enemy Y: " << it->getPosY() << std::endl;
 				//std::cout << "player x: " << player.getPosX() << " player y: " << player.getPosY() << std::endl;
-
 				++it;
 			}
 		}
@@ -339,7 +337,6 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 		}
 	}
 }
-
 
 void updateFireBalls(Player& player, Enemy& enemy) {
 	auto& fireballs = player.getFireBalls();
