@@ -15,6 +15,9 @@ public:
     void update(sf::Event& event);  // Check for key presses
     bool getEsc() { return escape; }
     void setEsc(bool val) { escape = val; }
+    bool getClickLeft() { return clickLeft; }
+    void setClickLeft(bool val) { clickLeft = val; }
 private:
     bool escape;
+    bool clickLeft;
 };

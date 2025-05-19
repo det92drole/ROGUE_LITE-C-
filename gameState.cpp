@@ -1,5 +1,11 @@
 #include "gameState.h"
 
+GameManager::GameManager() :gameState(GameState::Playing) {
+    if (!font.loadFromFile("Assets/Fonts/arial.ttf")) {
+        std::cerr << "Failed to load font!\n";
+    }
+}
+
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState gameState) {
     //std::cout << "DRAW MENU CALLE1" << std::endl;
     if (gameState == GameState::Paused) {
@@ -15,16 +21,55 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState g
         sf::Vector2f worldSize(size.x * scaleX, size.y * scaleY);
 
         // Center the menu around the player's world position
-        sf::Vector2f position(player.getPosX()*100 - worldSize.x / 2.0f, player.getPosY()*100 - worldSize.y / 2.0f);
+        sf::Vector2f positionMenu(player.getPosX()*100 - worldSize.x / 2.0f, player.getPosY()*100 - worldSize.y / 2.0f);
 
         sf::RectangleShape border;
         border.setSize(worldSize);
-        border.setPosition(position);
+        border.setPosition(positionMenu);
         border.setFillColor(sf::Color(255, 0, 0, 100)); // red
         border.setOutlineColor(sf::Color::Red);
         border.setOutlineThickness(3.0f);
 
         window.draw(border);
+
+        // ---- TEXT ----
+        sf::Text title;
+        title.setFont(font); // must be accessible from this scope
+        title.setString("Game Paused");
+        title.setCharacterSize(24);
+        title.setFillColor(sf::Color::White);
+        title.setPosition(positionMenu.x + 20, positionMenu.y + 20);
+        window.draw(title);
+
+        // ---- BUTTON: Resume ----
+        float width = 150.f;
+        float height = 40.f;
+        resumeBtn.setSize(sf::Vector2f(width, height));
+        resumeBtn.setPosition(positionMenu.x + 20, positionMenu.y + 70);
+        resumeBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
+        window.draw(resumeBtn);
+
+        sf::Text resumeText;
+        resumeText.setFont(font);
+        resumeText.setString("Resume");
+        resumeText.setCharacterSize(18);
+        resumeText.setFillColor(sf::Color::White);
+        resumeText.setPosition(resumeBtn.getPosition().x + 20, resumeBtn.getPosition().y + 5);
+        window.draw(resumeText);
+
+        // ---- BUTTON: Resume ----
+        quitBtn.setSize(sf::Vector2f(width, height));
+        quitBtn.setPosition(positionMenu.x + 20, positionMenu.y + 130);
+        quitBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
+        window.draw(quitBtn);
+
+        sf::Text quitText;
+        quitText.setFont(font);
+        quitText.setString("Quit");
+        quitText.setCharacterSize(18);
+        quitText.setFillColor(sf::Color::White);
+        quitText.setPosition(quitBtn.getPosition().x + 20, quitBtn.getPosition().y + 5);
+        window.draw(quitText);
 
     }
     
@@ -65,6 +110,22 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             std::cout << "GAME UNPAUSED"<<std::endl;
             keyManager.setEsc(false);
         }
+        //resume button logic
+        if (keyManager.getClickLeft()) {
+            worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            //std::cout << "Mouse clicked at: " << worldPos.x << ", " << worldPos.y << std::endl;
+            //std::cout << "button at: " << resumeBtn.getPosition().x << ", " << resumeBtn.getPosition().y << std::endl;
+            if (resumeBtn.getGlobalBounds().contains(worldPos)) {
+                gameState = GameState::Playing;
+                std::cout << "Resume button clicked!\n";
+            }
+            if (quitBtn.getGlobalBounds().contains(worldPos)) {
+                std::cout << "Quit button clicked!\n";
+                window.close();
+
+            }
+        }
+
         drawGame(window, player, enemy, renderer, gameState);
 
     }

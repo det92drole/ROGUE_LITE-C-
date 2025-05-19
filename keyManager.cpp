@@ -13,7 +13,7 @@ KeyManager::KeyManager():escape(false){
 
 void KeyManager::update(sf::Event& event) {
 
-    moveLeft = moveDown = moveUp = moveRight = spaceBar= false;
+    moveLeft = moveDown = moveUp = moveRight = spaceBar=clickLeft= false;
 
     // Check for key presses and update windowManager viewPort
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -42,5 +42,12 @@ void KeyManager::update(sf::Event& event) {
         escape = true;
         //std::cout << "ESCAPE PRESSED" << std::endl;
     }
+
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            clickLeft = true;
+        }
+    }
+
 }
     
