@@ -36,16 +36,13 @@ int main() {
     {
         sf::Time dt = clock.restart();
         windowManager.processEvents(keyManager); //key manager called here
-        game.gameCheck(player, exitX, exitY, player.getDirection(), enemy, dt, moveLeft, moveRight, moveUp, moveDown, spaceBar, keyManager);
 
         //draw here
         window.clear(backgroundColor);
-        renderer.drawGrid(); 
-        player.draw(window);
-        enemy.draw(window);
-        //draw menu over game
-
         windowManager.playerView(player.getPosX(), player.getPosY(), squareSize); //camera centered on player
+
+        game.gameCheck(player, exitX, exitY, player.getDirection(), enemy, dt, 
+            moveLeft, moveRight, moveUp, moveDown, spaceBar, keyManager, window, renderer); //game update and draw mech
         window.display();
     }
     
