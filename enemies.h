@@ -32,6 +32,9 @@ public:
     void setWidthPx(int val) { widthPx=val; }
     void setHeightPx(int val) { heightPx = val; }
     float getEpsilon() { return epsilon; }
+    void setAgro(bool val) { agro = val; }
+    bool getAgro() { return agro; }
+    int getID() { return id; }
 
 
 private:
@@ -50,6 +53,7 @@ private:
     float epsilon;
     int widthPx;
     int heightPx;
+    bool agro;
 
     //static std::vector<Enemy> enemyArr;
 

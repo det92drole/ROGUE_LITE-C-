@@ -48,6 +48,7 @@ std::vector<Enemy>& Enemy::getEnemies() {
 
 void Enemy::update(sf::Time deltaTime) {
 	//updated sprite animation
+	
 	for (auto it = getEnemies().begin(); it != getEnemies().end(); ) {
 		it->elapsedTime += deltaTime.asSeconds();
 		if (it->elapsedTime >= it->frameTime) {
@@ -277,6 +278,7 @@ void Enemy::spawnEnemies() {
 		enemy.enemyPosY = y;
 		enemy.direction = std::rand() % 4;
 		enemy.frame = std::rand() % 8;
+		enemy.agro = false;
 
 		switch (enemyRand) {
 			case 0: {
