@@ -35,3 +35,8 @@ Makefile
 *.opendb
 *.tlog
 *.ipch
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+NEW_TILE/
