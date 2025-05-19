@@ -12,9 +12,21 @@ SFML/
 *.lib
 *.a
 
+Release/
+*.ilk
+
 # Ignore CMake files
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
 
+# Visual Studio user-specific and indexing files
+.vs/
+*.vsidx
+*.suo
+*.user
+*.VC.db*
+*.opendb
+*.tlog
+*.ipch
