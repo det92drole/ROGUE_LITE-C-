@@ -3,11 +3,11 @@
 #include "rand.h"
 
 Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false) {
-	tD.loadFromFile("Assets/Player/playerDown.png");  // texture down move
-	tR.loadFromFile("Assets/Player/playerRight.png");  // texture right move
-	tL.loadFromFile("Assets/Player/playerLeft.png");  // texture left move
-	tU.loadFromFile("Assets/Player/playerUp.png");  // texture up move
-	tF.loadFromFile("Assets/Player/fireball.png"); //fireball texture
+	if (!loadTextures()) {
+		std::cerr << "Error: Failed to load one or more player textures.\n";
+		// Optional: handle error, e.g., set a fallback texture or throw an exception
+	}
+
 	direction = 0; //0 up, 1 right, 2 down, 3 left
 	sprite.setTexture(tU);// default texture player faces up
 
@@ -26,6 +26,17 @@ FireBall Player::createFireBall(float spawnX, float spawnY) {
 	newFB.spriteBall.setPosition(newFB.x * squareSize, newFB.y * squareSize);
 	newFB.spriteBall.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
 	return newFB;
+}
+
+Item Player::createKey(float x, float y) {
+	Item newKey;
+	newKey.x = x;
+	newKey.y = y;
+	newKey.itemSprite.setTexture(tKey);
+	newKey.itemSprite.setPosition(newKey.x * squareSize, newKey.y * squareSize);
+	newKey.itemSprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
+	newKey.itemSprite.setScale(2.0f, 2.0f);  // (x scale, y scale)
+	return newKey;
 }
 
 void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool down, bool space) {
@@ -281,6 +292,11 @@ void Player::draw(sf::RenderWindow& window) {
 		it->spriteBall.setPosition(it->x * squareSize, it->y * squareSize);
 		window.draw(it->spriteBall);
 	}
+	for (auto it = getKeys().begin(); it != getKeys().end(); ++it) {
+		it->itemSprite.setPosition(it->x * squareSize, it->y * squareSize);
+		window.draw(it->itemSprite);
+	}
+	
 }
 
 int Player::getHealth() const {
@@ -307,4 +323,13 @@ void Player::testArrPlayer() {
 
 std::vector<Player>& Player::getPlayers() {
 	return playerArr;
+}
+
+bool Player::loadTextures() {
+	return tD.loadFromFile("Assets/Player/playerDown.png") &&
+		tR.loadFromFile("Assets/Player/playerRight.png") &&
+		tL.loadFromFile("Assets/Player/playerLeft.png") &&
+		tU.loadFromFile("Assets/Player/playerUp.png") &&
+		tF.loadFromFile("Assets/Player/fireball.png") &&
+		tKey.loadFromFile("Assets/Player/key.png");
 }

@@ -9,13 +9,13 @@ int mapW = x;
 int mapH = y;
 
 std::vector<sf::Sprite> spritesM;
-std::vector<sf::Texture> textures(6);  // 0, 1, 2,3; wall, path, edge-path, player spawn;
+std::vector<sf::Texture> textures(7);  // 0, 1, 2,3; wall, path, edge-path, player spawn;
 
 void Renderer::drawGrid() {
 
     sf::RenderWindow& window = windowManager.getWindow();
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 7; ++i) {
         // Create binary filename like "0000.jpg", "0001.jpg", ..., "0101.jpg"
         std::string binaryFilename = "Assets/MapTiles/" + std::bitset<4>(i).to_string() + ".jpg";  // 4-bit binary string
         if (!textures[i].loadFromFile(binaryFilename)) {

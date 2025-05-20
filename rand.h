@@ -9,6 +9,8 @@ extern int spawnFloatX;
 extern int spawnFloatY;
 extern int exitX;
 extern int exitY;
+extern int keyX;
+extern int keyY;
 
 void popGrid();
 void printGrid();

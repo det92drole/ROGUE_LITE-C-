@@ -12,6 +12,8 @@ int spawnFloatX = 0;
 int spawnFloatY = 0;
 int exitX=0;
 int exitY=0;
+int keyX = 0;
+int keyY = 0;
 
 //0 is wall(#), 1 is path(.), 2 is path touching wall(,), 3 is path/player-spawn(@);
 // grid[row][col] => grid[y][x]
@@ -168,6 +170,24 @@ void playerSpawnCheck() {
             }
         }
         grid[spawnFloatY][spawnFloatX] = 3; //redeclare since runWorm changes spawn tile value
+        //find key spawn
+        std::vector<std::pair<int, int>> keySpawns;
+
+        for (int h = 1; h < y - 1; h++) {
+            for (int w = 1; w < x - 1; w++) {
+                if (grid[h][w] == 1) {
+                    keySpawns.emplace_back(h, w);
+                }
+            }
+        }
+        //randomly select a path tile for key
+        if (!keySpawns.empty()) {
+            std::pair<int, int> keySpawn = keySpawns[rand() % keySpawns.size()];
+            grid[keySpawn.first][keySpawn.second] = 6;
+            keyX=keySpawn.second;
+            keyY=keySpawn.first;
+        }
+        
     }
     else {
         // Handle this somehow -- maybe log an error or fallback
@@ -272,6 +292,9 @@ void printGrid() {
             }
             if (grid[i][j] == 5) {
                 std::cout << "*"; //worm path
+            }
+            if (grid[i][j] == 6) {
+                std::cout << "!"; //worm path
             }
         }
         std::cout << "\n";

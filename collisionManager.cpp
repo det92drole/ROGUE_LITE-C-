@@ -8,6 +8,7 @@ void startNewLevel(Player& player, Enemy& enemy) {
 	player.setPosX(spawnFloatX);
 	player.setPosY(spawnFloatY);
 	enemy.spawnEnemies();
+	player.getKeys().emplace_back(player.createKey(keyX, keyY));
 }
 
 bool pointInBox(float fX, float fY, float fH, float fW, float eX, float eY, float eH, float eW) {

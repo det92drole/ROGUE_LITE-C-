@@ -17,12 +17,12 @@ int main() {
     KeyManager keyManager;  // 
 
     popGrid();
-    //printGrid();
+    printGrid();
 
     Player player; //created AFTER grid and spawn determined by printGrid();
     Enemy enemy;
     GameManager game;
-
+    player.getKeys().emplace_back(player.createKey(keyX, keyY));
     enemy.spawnEnemies();
 
     
