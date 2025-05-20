@@ -4,6 +4,7 @@ float buffer = 0.02f;
 float epsilon = 0.02f;
 
 void startNewLevel(Player& player, Enemy& enemy) {
+	player.getKeys().clear();
 	popGrid();
 	player.setPosX(spawnFloatX);
 	player.setPosY(spawnFloatY);
@@ -83,6 +84,23 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				startNewLevel(player, enemy);
 			}
 		}
+		//check for key
+		if (grid[intPlayerY][intPlayerX - 1] == 6) {
+			if (player.getPosX() <= intPlayerX + epsilon) {
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
+		if (grid[intPlayerY + 1][intPlayerX - 1] == 6 && (intPlayerY + 1) != y - 1) {
+			if (player.getPosX() <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
+		//check for key
+
 		break;
 	case 1:
 		// right logic
@@ -117,6 +135,21 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
 				//popGrid();
 				startNewLevel(player, enemy);
+			}
+		}
+		//check for key
+		if (grid[intPlayerY][intPlayerX + 1] == 6) {
+			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
+		if (grid[intPlayerY + 1][intPlayerX + 1] == 6 && (intPlayerY + 1) != y - 1) {
+			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
 		break;
@@ -156,6 +189,21 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				startNewLevel(player, enemy);
 			}
 		}
+		//check for key
+		if (grid[intPlayerY - 1][intPlayerX] == 6) {
+			if (player.getPosY() <= intPlayerY + epsilon) {
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
+		if (grid[intPlayerY - 1][intPlayerX + 1] == 6 && (intPlayerX + 1) != x - 1) {
+			if (player.getPosY() <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
 		break;
 	case 2:
 		// down logic
@@ -191,6 +239,21 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
 				//popGrid();
 				startNewLevel(player, enemy);
+			}
+		}
+		//check for key
+		if (grid[intPlayerY + 1][intPlayerX] == 6) {
+			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
+			}
+		}
+		if (grid[intPlayerY + 1][intPlayerX + 1] == 6 && (intPlayerX + 1) != x - 1) {
+			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
+				//popGrid();
+				player.getKeys().clear();
+				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
 		break;

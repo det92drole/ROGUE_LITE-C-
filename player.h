@@ -71,6 +71,8 @@ public:
         return keys;
     }
     bool loadTextures();
+    int getKeyCount() { return keyCount; }
+    void setKeyCount(int val) { keyCount = val; }
 
 private:
 
@@ -90,6 +92,7 @@ private:
     int playerHealth;
     int direction;
     bool canMove;
+    int keyCount;
     static std::vector<Player> playerArr;
     std::vector<FireBall> fireBalls;
     std::vector<Item> keys;
