@@ -2,7 +2,7 @@
 #include <iostream>
 #include "rand.h"
 
-Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false) {
+Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0) {
 	if (!loadTextures()) {
 		std::cerr << "Error: Failed to load one or more player textures.\n";
 		// Optional: handle error, e.g., set a fallback texture or throw an exception
