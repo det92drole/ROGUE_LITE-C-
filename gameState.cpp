@@ -6,7 +6,7 @@ GameManager::GameManager() :gameState(GameState::Playing) {
     }
 }
 
-void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState gameState) {
+void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
     //std::cout << "DRAW MENU CALLE1" << std::endl;
     if (gameState == GameState::Paused) {
         //std::cout << "DRAW MENU CALLE2" << std::endl;
@@ -71,11 +71,25 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState g
         quitText.setPosition(quitBtn.getPosition().x + 20, quitBtn.getPosition().y + 5);
         window.draw(quitText);
 
+        // ---- BUTTON: FIREBALL ----
+        redSprite.setTexture(player.getRedFireTexture());
+        redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+        window.draw(redSprite);
+        sf::RectangleShape redSpriteBorder;
+        sf::Vector2f redSpriteSize(64.5f, 64.0f);
+        sf::Color tempColor = sf::Color::Blue;
+        redSpriteBorder.setSize(redSpriteSize);
+        redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+        redSpriteBorder.setFillColor(sf::Color::Transparent); 
+        redSpriteBorder.setOutlineColor(tempColor);
+        redSpriteBorder.setOutlineThickness(3.0f);
+
+        window.draw(redSpriteBorder);
     }
     
 }
 
-void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enemy, Renderer& renderer, GameState gameState) {
+void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enemy, Renderer& renderer, GameState& gameState) {
     renderer.drawGrid();
     player.draw(window);
     enemy.draw(window);
@@ -90,7 +104,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
         // update game world (movement, collisions, etc.)
         if (keyManager.getEsc()) {
             gameState = GameState::Paused;
-            std::cout << "GAME PAUSED"<<std::endl;
+            //std::cout << "GAME PAUSED"<<std::endl;
             keyManager.setEsc(false);
         }
         else {
@@ -107,7 +121,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
         //std::cout << "GAME STILL PAUSED" << std::endl;
         if (keyManager.getEsc()) {
             gameState = GameState::Playing;
-            std::cout << "GAME UNPAUSED"<<std::endl;
+            //std::cout << "GAME UNPAUSED"<<std::endl;
             keyManager.setEsc(false);
         }
         //resume button logic
@@ -117,12 +131,15 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             //std::cout << "button at: " << resumeBtn.getPosition().x << ", " << resumeBtn.getPosition().y << std::endl;
             if (resumeBtn.getGlobalBounds().contains(worldPos)) {
                 gameState = GameState::Playing;
-                std::cout << "Resume button clicked!\n";
+                //std::cout << "Resume button clicked!\n";
             }
             if (quitBtn.getGlobalBounds().contains(worldPos)) {
-                std::cout << "Quit button clicked!\n";
+                //std::cout << "Quit button clicked!\n";
                 window.close();
-
+            }
+            if (redSprite.getGlobalBounds().contains(worldPos)) {
+                // handle hover or click
+                
             }
         }
 

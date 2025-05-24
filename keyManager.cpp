@@ -7,8 +7,8 @@ bool moveDown = false;
 bool spaceBar = false;
 float moveSpeed = 500.0f;
 
-KeyManager::KeyManager():escape(false){
-    std::cout << "listening for keystrokes" << std::endl;
+KeyManager::KeyManager():escape(false), clickLeft(false){
+    //std::cout << "listening for keystrokes" << std::endl;
 }
 
 void KeyManager::update(sf::Event& event) {

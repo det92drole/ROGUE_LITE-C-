@@ -4,7 +4,7 @@ Enemy::Enemy()
 	: id(-1), frame(0), frameTime(0.2f), elapsedTime(0.0f),
 	enemyPosX(0.0f), enemyPosY(0.0f), enemyHealth(100),
 	direction(0), speed(0.5f), epsilon(0.2f),
-	widthPx(0), heightPx(0)
+	widthPx(0), heightPx(0), agro(false)
 {
 	// sprite doesn't need init unless assigning texture here
 }
@@ -316,7 +316,7 @@ void Enemy::spawnEnemies() {
 	}
 
 	if (getEnemies().size() < 50) {
-		std::cerr << "Warning: Only spawned " << getEnemies().size() << std::endl;
+		//std::cerr << "Warning: Only spawned " << getEnemies().size() << std::endl;
 	}
 }
 

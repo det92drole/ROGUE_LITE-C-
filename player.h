@@ -73,6 +73,7 @@ public:
     bool loadTextures();
     int getKeyCount() { return keyCount; }
     void setKeyCount(int val) { keyCount = val; }
+    sf::Texture& getRedFireTexture() { return tF; }
 
 private:
 
