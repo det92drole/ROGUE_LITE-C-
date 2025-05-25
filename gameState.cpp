@@ -1,9 +1,37 @@
 #include "gameState.h"
 
-GameManager::GameManager() :gameState(GameState::Playing) {
+
+
+GameManager::GameManager(sf::RenderWindow& window) :gameState(GameState::Playing) {
     if (!font.loadFromFile("Assets/Fonts/arial.ttf")) {
         std::cerr << "Failed to load font!\n";
     }
+
+    //spawnBtn(window);
+    
+}
+
+void GameManager::spawnBtn(sf::RenderWindow& window) {
+    sf::Vector2f size(window.getSize().x / 2.0f, window.getSize().y - window.getSize().y / 4.0f);
+
+    // Convert screen-space size to world scale by applying the view's scaling
+    sf::View view = window.getView();
+    float scaleX = view.getSize().x / window.getSize().x;
+    float scaleY = view.getSize().y / window.getSize().y;
+
+    sf::Vector2f worldSize(size.x * scaleX, size.y * scaleY);
+
+    //currently two non-equipment buttons
+
+    for (int i = 0; i < 2; i++) {
+        Button newBtn;
+        newBtn.x;
+        newBtn.y;
+        newBtn.height;
+        newBtn.width;
+        //return newBtn;
+    }
+    
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
@@ -73,6 +101,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
 
         // ---- BUTTON: FIREBALL ----
         redSprite.setTexture(player.getRedFireTexture());
+        redSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
         redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 190);
         window.draw(redSprite);
         sf::RectangleShape redSpriteBorder;
