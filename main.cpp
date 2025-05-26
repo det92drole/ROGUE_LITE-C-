@@ -33,7 +33,7 @@ int main() {
     window.setFramerateLimit(60);
 
     //-----MENU-----
-    GameManager game(window);
+    GameManager game(window, player);
 
     while (window.isOpen())
     {

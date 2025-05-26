@@ -10,6 +10,8 @@
 class Renderer;
 
 struct Button {
+	//ON BACK BURNER
+
 	float x;
 	float y;
 	sf::Text btnText;
@@ -33,7 +35,7 @@ enum class GameState {
 
 class GameManager {
 public:
-	GameManager(sf::RenderWindow& window);
+	GameManager(sf::RenderWindow& window, Player& player);
 	GameState gameState;
 	sf::RectangleShape resumeBtn;
 	sf::RectangleShape quitBtn;
@@ -50,7 +52,7 @@ public:
 private:
 	sf::Font font;
 
-	void spawnBtn(sf::RenderWindow& window);
+	void spawnBtn(sf::RenderWindow& window, Player& player, GameState& gameState);
 
 };
 

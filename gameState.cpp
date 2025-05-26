@@ -2,16 +2,19 @@
 
 
 
-GameManager::GameManager(sf::RenderWindow& window) :gameState(GameState::Playing) {
+GameManager::GameManager(sf::RenderWindow& window, Player& player) :gameState(GameState::Playing) {
     if (!font.loadFromFile("Assets/Fonts/arial.ttf")) {
         std::cerr << "Failed to load font!\n";
     }
 
-    //spawnBtn(window);
+    //spawnBtn(window, player, gameState);
     
 }
 
-void GameManager::spawnBtn(sf::RenderWindow& window) {
+void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& gameState) {
+
+    //ON BACK BURNER
+
     sf::Vector2f size(window.getSize().x / 2.0f, window.getSize().y - window.getSize().y / 4.0f);
 
     // Convert screen-space size to world scale by applying the view's scaling
@@ -20,17 +23,19 @@ void GameManager::spawnBtn(sf::RenderWindow& window) {
     float scaleY = view.getSize().y / window.getSize().y;
 
     sf::Vector2f worldSize(size.x * scaleX, size.y * scaleY);
+    sf::Vector2f positionMenu(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
 
     //currently two non-equipment buttons
 
-    for (int i = 0; i < 2; i++) {
-        Button newBtn;
-        newBtn.x;
-        newBtn.y;
-        newBtn.height;
-        newBtn.width;
-        //return newBtn;
-    }
+    Button newBtn;
+    newBtn.x;
+    newBtn.y;
+    newBtn.height;
+    newBtn.width;
+    //return newBtn;
+
+    buttons[newBtn.stringText] = newBtn;
+    
     
 }
 
@@ -99,21 +104,23 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         quitText.setPosition(quitBtn.getPosition().x + 20, quitBtn.getPosition().y + 5);
         window.draw(quitText);
 
-        // ---- BUTTON: FIREBALL ----
+        // ---- BUTTON: RED FIREBALL ----
         redSprite.setTexture(player.getRedFireTexture());
         redSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
         redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 190);
         window.draw(redSprite);
-        sf::RectangleShape redSpriteBorder;
-        sf::Vector2f redSpriteSize(64.5f, 64.0f);
-        sf::Color tempColor = sf::Color::Blue;
-        redSpriteBorder.setSize(redSpriteSize);
-        redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 190);
-        redSpriteBorder.setFillColor(sf::Color::Transparent); 
-        redSpriteBorder.setOutlineColor(tempColor);
-        redSpriteBorder.setOutlineThickness(3.0f);
-
-        window.draw(redSpriteBorder);
+        
+        if (player.getSpell() == 1) {
+            sf::RectangleShape redSpriteBorder;
+            sf::Vector2f redSpriteSize(64.5f, 64.0f);
+            sf::Color tempColor = sf::Color::Blue;
+            redSpriteBorder.setSize(redSpriteSize);
+            redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+            redSpriteBorder.setFillColor(sf::Color::Transparent);
+            redSpriteBorder.setOutlineColor(tempColor);
+            redSpriteBorder.setOutlineThickness(3.0f);
+            window.draw(redSpriteBorder);
+        }
     }
     
 }
@@ -167,8 +174,8 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 window.close();
             }
             if (redSprite.getGlobalBounds().contains(worldPos)) {
-                // handle hover or click
-                
+                // handle click
+                player.setSpell(1);
             }
         }
 

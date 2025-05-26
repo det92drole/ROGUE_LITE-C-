@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "render.h"
 #include "keyManager.h"
+#include <optional>
 
 class Renderer;
 
@@ -45,7 +46,7 @@ struct Item {
 class Player {
 public:
     Player(); // Constructor
-    FireBall createFireBall(float spawnX, float spawnY);
+    std::optional<FireBall> createFireBall(float spawnX, float spawnY, int spell);
     Item createKey(float x,float y);
     int getHealth() const;
     void setHealth(int health);
@@ -74,6 +75,8 @@ public:
     int getKeyCount() { return keyCount; }
     void setKeyCount(int val) { keyCount = val; }
     sf::Texture& getRedFireTexture() { return tF; }
+    int getSpell() { return equipedSpell; }
+    void setSpell(int val) { equipedSpell = val; }
 
 private:
 
@@ -94,6 +97,7 @@ private:
     int direction;
     bool canMove;
     int keyCount;
+    int equipedSpell;
     static std::vector<Player> playerArr;
     std::vector<FireBall> fireBalls;
     std::vector<Item> keys;

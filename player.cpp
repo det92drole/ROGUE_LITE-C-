@@ -2,7 +2,7 @@
 #include <iostream>
 #include "rand.h"
 
-Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0) {
+Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0), equipedSpell(0) {
 	if (!loadTextures()) {
 		std::cerr << "Error: Failed to load one or more player textures.\n";
 		// Optional: handle error, e.g., set a fallback texture or throw an exception
@@ -17,15 +17,37 @@ Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0
 sf::Clock fireCooldownClock;  // measures time since last fire
 float fireCooldown = 0.5f;    // minimum seconds between shots
 
-FireBall Player::createFireBall(float spawnX, float spawnY) {
+std::optional<FireBall> Player::createFireBall(float spawnX, float spawnY, int spell) {
 	//std::cout << "Fire FireBall" << std::endl;
-	FireBall newFB;
-	newFB.x = spawnX;
-	newFB.y = spawnY;
-	newFB.spriteBall.setTexture(tF);
-	newFB.spriteBall.setPosition(newFB.x * squareSize, newFB.y * squareSize);
-	newFB.spriteBall.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
-	return newFB;
+	if (spell!=0) {
+		FireBall newFB;
+		newFB.x = spawnX;
+		newFB.y = spawnY;
+		switch (spell) {
+		case 0:
+		{
+			//no spell equiped
+			break;
+		}
+		case 1:
+		{
+			newFB.spriteBall.setTexture(tF);
+			newFB.spriteBall.setPosition(newFB.x * squareSize, newFB.y * squareSize);
+			newFB.spriteBall.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+			return newFB;
+		}
+		default:
+		{
+			
+			break;
+		}
+		}
+	}
+	else {
+		std::cout << "NO SPELL EQUIPPED; VAL: " << spell<<std::endl;
+		return std::nullopt;
+	}
+	
 }
 
 Item Player::createKey(float x, float y) {
@@ -104,62 +126,57 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	}
 
 	if (spaceBar && fireCooldownClock.getElapsedTime().asSeconds() > fireCooldown) {
-
-		switch (direction) {
+		auto newFireball = createFireBall(getPosX(), getPosY(), equipedSpell);
+		if (newFireball) {
+			switch (direction) {
 			case 3:
 			{
 				// only left true left
-				FireBall newFireball = createFireBall(getPosX(), getPosY());
-
-				newFireball.direction = 3;
-				newFireball.speed = -0.1f;
-				newFireball.widthPx=64.5;
-				newFireball.heightPx=64;
-				getFireBalls().push_back(newFireball);
-
+				newFireball->direction = 3;
+				newFireball->speed = -0.1f;
+				newFireball->widthPx = 64.5;
+				newFireball->heightPx = 64;
+				getFireBalls().push_back(*newFireball);
 				break;
 			}
 			case 1:
 			{
 				// only right true right
-				FireBall newFireball = createFireBall(getPosX(), getPosY());
-
-				newFireball.direction = 1;
-				newFireball.speed = 0.1f;
-				newFireball.widthPx = 64.5;
-				newFireball.heightPx = 64;
-				getFireBalls().push_back(newFireball);
+				newFireball->direction = 1;
+				newFireball->speed = 0.1f;
+				newFireball->widthPx = 64.5;
+				newFireball->heightPx = 64;
+				getFireBalls().push_back(*newFireball);
 				break;
 			}
 			case 0:
 			{
 				// only up true up
-				FireBall newFireball = createFireBall(getPosX(), getPosY());
-
-				newFireball.direction = 0;
-				newFireball.speed = -0.1f;
-				newFireball.widthPx = 64.5;
-				newFireball.heightPx = 64;
-				getFireBalls().push_back(newFireball);
+				newFireball->direction = 0;
+				newFireball->speed = -0.1f;
+				newFireball->widthPx = 64.5;
+				newFireball->heightPx = 64;
+				getFireBalls().push_back(*newFireball);
 				break;
 			}
 			case 2:
 			{
 				// only down true down
-				FireBall newFireball = createFireBall(getPosX(), getPosY());
-
-				newFireball.direction = 2;
-				newFireball.speed = 0.1f;
-				newFireball.widthPx = 64.5;
-				newFireball.heightPx = 64;
-				getFireBalls().push_back(newFireball);
+				newFireball->direction = 2;
+				newFireball->speed = 0.1f;
+				newFireball->widthPx = 64.5;
+				newFireball->heightPx = 64;
+				getFireBalls().push_back(*newFireball);
 				break;
 			}
 			default:
+			{
 				// unknown
 				//do not fire
 				break;
 			}
+			}
+		}
 		// Reset the cooldown clock
 		fireCooldownClock.restart();
 	}
