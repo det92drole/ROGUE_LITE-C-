@@ -75,6 +75,8 @@ public:
     int getKeyCount() { return keyCount; }
     void setKeyCount(int val) { keyCount = val; }
     sf::Texture& getRedFireTexture() { return tF; }
+    sf::Texture& getBlueFireTexture() { return tBlue; }
+
     int getSpell() { return equipedSpell; }
     void setSpell(int val) { equipedSpell = val; }
 
@@ -85,6 +87,8 @@ private:
     sf::Texture tL; //texture left move
     sf::Texture tU; //texture up move
     sf::Texture tF; //fireball texture
+    sf::Texture tBlue; //blue spell texture
+
     sf::Texture tKey;
 
     sf::Sprite sprite;

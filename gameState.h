@@ -40,6 +40,7 @@ public:
 	sf::RectangleShape resumeBtn;
 	sf::RectangleShape quitBtn;
 	sf::Sprite redSprite;
+	sf::Sprite blueSprite;
 	sf::Vector2f worldPos; //mouse position
 	sf::Vector2f worldSize; //referencing game window
 	void drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState);

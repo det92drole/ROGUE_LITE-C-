@@ -36,6 +36,13 @@ std::optional<FireBall> Player::createFireBall(float spawnX, float spawnY, int s
 			newFB.spriteBall.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
 			return newFB;
 		}
+		case 2:
+		{
+			newFB.spriteBall.setTexture(tBlue);
+			newFB.spriteBall.setPosition(newFB.x * squareSize, newFB.y * squareSize);
+			newFB.spriteBall.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+			return newFB;
+		}
 		default:
 		{
 			
@@ -347,6 +354,7 @@ bool Player::loadTextures() {
 		tR.loadFromFile("Assets/Player/playerRight.png") &&
 		tL.loadFromFile("Assets/Player/playerLeft.png") &&
 		tU.loadFromFile("Assets/Player/playerUp.png") &&
-		tF.loadFromFile("Assets/Player/fireball.png") &&
+		tF.loadFromFile("Assets/Player/fireball.png") && 
+		tBlue.loadFromFile("Assets/Player/blue.png") &&
 		tKey.loadFromFile("Assets/Player/key.png");
 }

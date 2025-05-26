@@ -121,6 +121,24 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             redSpriteBorder.setOutlineThickness(3.0f);
             window.draw(redSpriteBorder);
         }
+
+        // ---- BUTTON: BLUE FIREBALL ----
+        blueSprite.setTexture(player.getBlueFireTexture());
+        blueSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
+        blueSprite.setPosition(positionMenu.x + 95, positionMenu.y + 190);
+        window.draw(blueSprite);
+
+        if (player.getSpell() == 2) {
+            sf::RectangleShape blueSpriteBorder;
+            sf::Vector2f blueSpriteSize(64.5f, 64.0f);
+            sf::Color tempColor = sf::Color::Blue;
+            blueSpriteBorder.setSize(blueSpriteSize);
+            blueSpriteBorder.setPosition(positionMenu.x +95, positionMenu.y + 190);
+            blueSpriteBorder.setFillColor(sf::Color::Transparent);
+            blueSpriteBorder.setOutlineColor(tempColor);
+            blueSpriteBorder.setOutlineThickness(3.0f);
+            window.draw(blueSpriteBorder);
+        }
     }
     
 }
@@ -176,6 +194,10 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             if (redSprite.getGlobalBounds().contains(worldPos)) {
                 // handle click
                 player.setSpell(1);
+            }
+            if (blueSprite.getGlobalBounds().contains(worldPos)) {
+                // handle click
+                player.setSpell(2);
             }
         }
 
