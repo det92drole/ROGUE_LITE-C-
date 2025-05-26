@@ -23,6 +23,7 @@ std::optional<FireBall> Player::createFireBall(float spawnX, float spawnY, int s
 		FireBall newFB;
 		newFB.x = spawnX;
 		newFB.y = spawnY;
+		newFB.spellType = spell;
 		switch (spell) {
 		case 0:
 		{

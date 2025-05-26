@@ -94,10 +94,10 @@ void runWorm(int xS, int yS) {
     std::vector<int> validDirections;
 
     // Check which directions are valid
-    if (yS > 1 && grid[yS-1][xS]!=5) validDirections.push_back(0);  // Up
-    if (xS < (x - 2)&& grid[yS][xS+1] != 5) validDirections.push_back(1);  // Right
-    // if (yS < (y - 2)) validDirections.push_back(2);  // Down; not valid direction
-    if (xS > 1&& grid[yS][xS-1] != 5) validDirections.push_back(3);  // Left
+    if (yS >= 2 && grid[yS-1][xS]!=5) validDirections.push_back(0);  // Up
+    if (xS <= (x - 3)&& grid[yS][xS+1] != 5) validDirections.push_back(1);  // Right
+    // if (yS <= (y - 3)) validDirections.push_back(2);  // Down; not valid direction
+    if (xS >= 2 && grid[yS][xS-1] != 5) validDirections.push_back(3);  // Left
 
     if (validDirections.empty()) {
         //std::cout << "No valid moves. Stopping worm." << std::endl;
@@ -212,14 +212,14 @@ void cleanGrid() {
 
     //make edges of map walls
     for (int i = 0; i < y; i++) {
-        grid[i][0] = 0;
-        grid[i][x - 1] = 0;
+        grid[i][0] = 7;
+        grid[i][x - 1] = 7;
 
     }
     //make edges of map walls
     for (int i = 0; i < x; i++) {
-        grid[0][i] = 0;
-        grid[y - 1][i] = 0;
+        grid[0][i] = 7;
+        grid[y - 1][i] = 7;
     }
 
     //add "," for path spaces that are adjacent to walls
@@ -278,7 +278,7 @@ void printGrid() {
             if (grid[i][j] == 2) {
                 std::cout << ","; //path touching wall
             }
-            if (!grid[i][j]) {//grid[i][j]=0
+            if (grid[i][j]==0) {
                 std::cout << "#"; //wall
             }
             if(grid[i][j] == 1) {
@@ -288,13 +288,16 @@ void printGrid() {
                 std::cout << "@"; //player spawn
             }
             if (grid[i][j] == 4) {
-                std::cout << "$"; //player spawn
+                std::cout << "$"; //exit
             }
             if (grid[i][j] == 5) {
                 std::cout << "*"; //worm path
             }
             if (grid[i][j] == 6) {
-                std::cout << "!"; //worm path
+                std::cout << "!"; //item/key
+            }
+            if (grid[i][j] == 7) {
+                std::cout << "%"; //edge wall
             }
         }
         std::cout << "\n";

@@ -19,6 +19,7 @@ struct FireBall {
     int direction;
     float widthPx;
     float heightPx;
+    int spellType;
 
     int frame = 0;
     float elapsedTime = 0.0f;

@@ -35,8 +35,6 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     //return newBtn;
 
     buttons[newBtn.stringText] = newBtn;
-    
-    
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
@@ -140,7 +138,6 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             window.draw(blueSpriteBorder);
         }
     }
-    
 }
 
 void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enemy, Renderer& renderer, GameState& gameState) {
@@ -148,7 +145,6 @@ void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enem
     player.draw(window);
     enemy.draw(window);
     drawMenu(window, player, gameState);
-
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
@@ -165,7 +161,6 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             player.update(deltaTime, left, right, up, down, space);
             collisions(player, exitX, exitY, player.getDirection(), enemy, deltaTime);
             enemy.update(deltaTime);
-
         }
         drawGame(window, player, enemy, renderer, gameState);
 
@@ -200,8 +195,6 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 player.setSpell(2);
             }
         }
-
         drawGame(window, player, enemy, renderer, gameState);
-
     }
 }

@@ -47,13 +47,18 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 	// can also reset map on level exit
 	int intPlayerX = static_cast<int>(player.getPosX());
 	int intPlayerY = static_cast<int>(player.getPosY());
-
+	bool hitWall = false;
+	bool hitCorner = false;
 	player.setCanMove(true);
 
 	switch (direction) {
 	case 3:
 		// left collision logic
-		if (grid[intPlayerY][intPlayerX - 1] == 0) { //if value zero; then cannot walk
+		hitWall = (grid[intPlayerY][intPlayerX - 1] == 0) || (grid[intPlayerY][intPlayerX - 1] == 7);
+		hitCorner = (grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) ||
+			(grid[intPlayerY + 1][intPlayerX - 1] == 7 && (intPlayerY + 1) != y - 1);
+
+		if (hitWall) { //if value zero; then cannot walk
 			//NOT legal move into gridMap[intPlayerX][intPlayerY]
 			//std::cout << "not legal LEFT" << std::endl;
 			//std::cout << "player pos: "<< getPosX() << " wall X: "<<intPlayerX << std::endl;
@@ -64,8 +69,7 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				player.setCanMove(false);
 			}
 		}
-
-		if (grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) {
+		if (hitCorner) {
 			//check if feet touch
 			//std::cout << "intPlayerY + 1; " << intPlayerY + 1 << " getPosY: "<< getPosY() << " y: " << y << std::endl;
 			if (player.getPosX() <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
@@ -109,12 +113,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
-		//check for key
-
 		break;
 	case 1:
 		// right logic
-		if (!grid[intPlayerY][intPlayerX + 1]) {
+		hitWall = (grid[intPlayerY][intPlayerX + 1] == 0) || (grid[intPlayerY][intPlayerX + 1] == 7);
+		hitCorner = (grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) ||
+			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerY + 1) != y - 1);
+
+		if (hitWall) {
 			//NOT legal move
 			//std::cout << "not legal RIGHT" << std::endl;
 			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
@@ -125,7 +131,7 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				player.setCanMove(false);
 			}
 		}
-		if (grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) {
+		if (hitCorner) {
 			//check if feet touch
 			//std::cout << "intPlayerY + 1; " << intPlayerY + 1 << " getPosY: "<< getPosY() << " y: " << y << std::endl;
 			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
@@ -171,7 +177,11 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		break;
 	case 0:
 		// up logic
-		if (!grid[intPlayerY - 1][intPlayerX]) {
+		hitWall = (grid[intPlayerY - 1][intPlayerX] == 0) || (grid[intPlayerY - 1][intPlayerX] == 7);
+		hitCorner = (grid[intPlayerY - 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
+			(grid[intPlayerY - 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1);
+
+		if (hitWall) {
 			//NOT legal move
 			//std::cout << "not legal UP" << std::endl;
 			if (player.getPosY() <= intPlayerY + epsilon) {
@@ -181,7 +191,7 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				player.setCanMove(false);
 			}
 		}
-		if (!grid[intPlayerY - 1][intPlayerX + 1] && (intPlayerX + 1) != x - 1) {
+		if (hitCorner) {
 			//NOT legal move
 			//std::cout << "not legal UP" << std::endl;
 			if (player.getPosY() <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
@@ -229,7 +239,10 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		break;
 	case 2:
 		// down logic
-		if (!grid[intPlayerY + 1][intPlayerX]) {
+		hitWall = (grid[intPlayerY + 1][intPlayerX] == 0) || (grid[intPlayerY + 1][intPlayerX] == 7);
+		hitCorner = (grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) || 
+			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1);
+		if (hitWall) {
 			//NOT legal move
 			//std::cout << "not legal DOWN" << std::endl;
 			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
@@ -239,7 +252,7 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 				player.setCanMove(false);
 			}
 		}
-		if (!grid[intPlayerY + 1][intPlayerX + 1] && (intPlayerX + 1) != x - 1) {
+		if (hitCorner) {
 			//NOT legal move
 			//std::cout << "not legal DOWN" << std::endl;
 			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
@@ -335,9 +348,13 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 					}
 					else {
 						bool hitWallSide = !grid[tempY][tempX - 1] && it->getPosX() <= tempX + it->getEpsilon();
+						bool hitEdge=grid[tempY][tempX - 1]==7 && it->getPosX() <= tempX + it->getEpsilon();
 						bool hitWallCorner = !grid[tempY + 1][tempX - 1] && (tempY + 1) != y - 1 &&
 							it->getPosX() <= tempX + it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
-						if (hitWallSide || hitWallCorner) {
+						bool hitEdgeCorner=grid[tempY + 1][tempX - 1]==7 && (tempY + 1) != y - 1 &&
+							it->getPosX() <= tempX + it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
+						
+						if (hitWallSide || hitWallCorner|| hitEdge|| hitEdgeCorner) {
 							it->setSpeed(it->getSpeed() * -1);
 							it->setDirection(1);
 						}
@@ -356,8 +373,11 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						bool hitWallSide = !grid[tempY][tempX + 1] && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon();
 						bool hitWallCorner = !grid[tempY + 1][tempX + 1] && (tempY + 1) != y - 1 &&
 							it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
+						bool hitEdge = grid[tempY][tempX + 1] ==7&& it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon();
+						bool hitEdgeCorner = grid[tempY + 1][tempX + 1] ==7&& (tempY + 1) != y - 1 &&
+							it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
 
-						if (hitWallSide || hitWallCorner) {
+						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
 							//logg << "hit" << std::endl;
 							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
 							//logg << "Speed before: " << it->speed << std::endl;
@@ -381,8 +401,12 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						bool hitWallSide = !grid[tempY - 1][tempX] && it->getPosY() <= tempY + it->getEpsilon();
 						bool hitWallCorner = !grid[tempY - 1][tempX + 1] && (tempX + 1) != x - 1 &&
 							it->getPosY() <= tempY + it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
+						bool hitEdge = grid[tempY - 1][tempX] ==7&& it->getPosY() <= tempY + it->getEpsilon();
+						bool hitEdgeCorner = grid[tempY - 1][tempX + 1] ==7&& (tempX + 1) != x - 1 &&
+							it->getPosY() <= tempY + it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
 
-						if (hitWallSide || hitWallCorner) {
+
+						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
 							//logg << "hit" << std::endl;
 							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
 							//logg << "Speed before: " << it->speed << std::endl;
@@ -407,8 +431,11 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						bool hitWallSide = !grid[tempY + 2][tempX] && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon();
 						bool hitWallCorner = !grid[tempY + 2][tempX + 1] && (tempX + 1) != x - 1 &&
 							it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
+						bool hitEdge = grid[tempY + 2][tempX] ==7&& it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon();
+						bool hitEdgeCorner = grid[tempY + 2][tempX + 1]==7 && (tempX + 1) != x - 1 &&
+							it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
 
-						if (hitWallSide || hitWallCorner) {
+						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
 							//logg << "hit" << std::endl;
 							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
 							//logg << "Speed before: " << it->speed << std::endl;
@@ -444,52 +471,107 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 		// === 1. WALL COLLISION AND MOVEMENT ===
 		switch (it->direction) {
 		case 3: { // LEFT
-			if (tempX <= 0 ||
-				(!grid[tempY][tempX - 1] && it->getX() <= tempX + it->getEpsilon()) ||
-				(!grid[tempY + 1][tempX - 1] && tempY + 1 != y - 1 &&
-					it->getX() <= tempX + it->getEpsilon() && it->getY() + .64f >= tempY + 1)) {
+			if (tempX <= 0) {
 				eraseFireball = true;
 			}
 			else {
-				it->setX(it->getX() + it->getSpeed());
+				bool hitWall = (grid[tempY][tempX - 1] == 0 && it->getX() <= tempX + it->getEpsilon());
+				bool hitCorner = (grid[tempY + 1][tempX - 1] == 0 && tempY + 1 != y - 1 &&
+					it->getX() <= tempX + it->getEpsilon() && it->getY() + .64f >= tempY + 1);
+				if (hitWall) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY][tempX - 1] = 2; //remove wall
+					}
+				}
+				else if (hitCorner) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY + 1][tempX - 1] = 2; //remove wall
+					}
+				}
+				else {
+					it->setX(it->getX() + it->getSpeed());
+				}
 			}
 			break;
 		}
 		case 1: { // RIGHT
-			if (tempX >= grid[0].size() - 1 ||
-				(!grid[tempY][tempX + 1] && it->getX() + .645f >= tempX + 1 - it->getEpsilon()) ||
-				(!grid[tempY + 1][tempX + 1] && tempY + 1 != y - 1 &&
-					it->getX() + .645f >= tempX + 1 - it->getEpsilon() &&
-					it->getY() + .64f >= tempY + 1)) {
+			if (tempX >= grid[0].size() - 1) {
 				eraseFireball = true;
 			}
 			else {
-				it->setX(it->getX() + it->getSpeed());
+				bool hitWall = (grid[tempY][tempX + 1] == 0 && it->getX() + .645f >= tempX + 1 - it->getEpsilon());
+				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempY + 1 != y - 1 &&
+					it->getX() + .645f >= tempX + 1 - it->getEpsilon() && it->getY() + .64f >= tempY + 1);
+				if (hitWall) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY][tempX + 1] = 2;
+					}
+				}
+				else if (hitCorner) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY + 1][tempX + 1] = 2;
+					}
+				}
+				else {
+					it->setX(it->getX() + it->getSpeed());
+				}
 			}
 			break;
 		}
 		case 0: { // UP
-			if (tempY <= 0 ||
-				(!grid[tempY - 1][tempX] && it->getY() <= tempY + it->getEpsilon()) ||
-				(!grid[tempY - 1][tempX + 1] && tempX + 1 != x - 1 &&
-					it->getY() <= tempY + it->getEpsilon() && it->getX() + .645f >= tempX + 1)) {
+			if (tempY <= 0) {
 				eraseFireball = true;
 			}
 			else {
-				it->setY(it->getY() + it->getSpeed());
+				bool hitWall = (grid[tempY - 1][tempX] == 0 && it->getY() <= tempY + it->getEpsilon());
+				bool hitCorner = (grid[tempY - 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
+					it->getY() <= tempY + it->getEpsilon() && it->getX() + .645f >= tempX + 1);
+				std::cout << "hitWall: " << hitWall << " hitCorner: " << hitCorner << std::endl;
+				if (hitWall) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY - 1][tempX] = 2;
+					}
+				}
+				else if (hitCorner) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY - 1][tempX + 1] = 2;
+					}
+				}
+				else {
+					it->setY(it->getY() + it->getSpeed());
+				}
+
 			}
 			break;
 		}
 		case 2: { // DOWN
-			if (tempY + 1 >= grid.size() ||
-				(!grid[tempY + 1][tempX] && it->getY() + .64f >= tempY + 1 - it->getEpsilon()) ||
-				(!grid[tempY + 1][tempX + 1] && tempX + 1 != x - 1 &&
-					it->getY() + .64f >= tempY + 1 - it->getEpsilon() &&
-					it->getX() + .645f >= tempX + 1)) {
+			if (tempY + 1 >= grid.size() - 1) {
 				eraseFireball = true;
 			}
 			else {
-				it->setY(it->getY() + it->getSpeed());
+				bool hitWall = (grid[tempY + 1][tempX] == 0 && it->getY() + .64f >= tempY + 1 - it->getEpsilon());
+				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
+					it->getY() + .64f >= tempY + 1 - it->getEpsilon() && it->getX() + .645f >= tempX + 1);
+				if (hitWall) {
+					eraseFireball = true;
+					if (player.getSpell() == 2) {
+						grid[tempY + 1][tempX] = 2;
+					}
+				}
+				else if (hitCorner) {
+					if (player.getSpell() == 2) {
+						grid[tempY + 1][tempX + 1] = 2;
+					}
+				}
+				else {
+					it->setY(it->getY() + it->getSpeed());
+				}
 			}
 			break;
 		}
