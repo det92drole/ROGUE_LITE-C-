@@ -63,6 +63,9 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
 
         window.draw(border);
 
+        float width = 150.f; //button size
+        float height = 40.f; //button size
+
         // ---- TEXT ----
         sf::Text title;
         title.setFont(font); // must be accessible from this scope
@@ -73,8 +76,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         window.draw(title);
 
         // ---- BUTTON: Resume ----
-        float width = 150.f;
-        float height = 40.f;
+        
         resumeBtn.setSize(sf::Vector2f(width, height));
         resumeBtn.setPosition(positionMenu.x + 20, positionMenu.y + 70);
         resumeBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
@@ -88,9 +90,37 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         resumeText.setPosition(resumeBtn.getPosition().x + 20, resumeBtn.getPosition().y + 5);
         window.draw(resumeText);
 
-        // ---- BUTTON: Resume ----
+        // ---- BUTTON: Save ----
+        saveBtn.setSize(sf::Vector2f(width, height));
+        saveBtn.setPosition(positionMenu.x + 20, positionMenu.y + 130);
+        saveBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
+        window.draw(saveBtn);
+
+        sf::Text saveText;
+        saveText.setFont(font);
+        saveText.setString("Save");
+        saveText.setCharacterSize(18);
+        saveText.setFillColor(sf::Color::White);
+        saveText.setPosition(saveBtn.getPosition().x + 20, saveBtn.getPosition().y + 5);
+        window.draw(saveText);
+
+        // ---- BUTTON: Load ----
+        loadBtn.setSize(sf::Vector2f(width, height));
+        loadBtn.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+        loadBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
+        window.draw(loadBtn);
+
+        sf::Text loadText;
+        loadText.setFont(font);
+        loadText.setString("Load");
+        loadText.setCharacterSize(18);
+        loadText.setFillColor(sf::Color::White);
+        loadText.setPosition(loadBtn.getPosition().x + 20, loadBtn.getPosition().y + 5);
+        window.draw(loadText);
+
+        // ---- BUTTON: Quit ----
         quitBtn.setSize(sf::Vector2f(width, height));
-        quitBtn.setPosition(positionMenu.x + 20, positionMenu.y + 130);
+        quitBtn.setPosition(positionMenu.x + 20, positionMenu.y + 250);
         quitBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
         window.draw(quitBtn);
 
@@ -105,7 +135,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         // ---- BUTTON: RED FIREBALL ----
         redSprite.setTexture(player.getRedFireTexture());
         redSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
-        redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+        redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 310);
         window.draw(redSprite);
         
         if (player.getSpell() == 1) {
@@ -113,7 +143,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             sf::Vector2f redSpriteSize(64.5f, 64.0f);
             sf::Color tempColor = sf::Color::Blue;
             redSpriteBorder.setSize(redSpriteSize);
-            redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 190);
+            redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 310);
             redSpriteBorder.setFillColor(sf::Color::Transparent);
             redSpriteBorder.setOutlineColor(tempColor);
             redSpriteBorder.setOutlineThickness(3.0f);
@@ -123,7 +153,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         // ---- BUTTON: BLUE FIREBALL ----
         blueSprite.setTexture(player.getBlueFireTexture());
         blueSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
-        blueSprite.setPosition(positionMenu.x + 95, positionMenu.y + 190);
+        blueSprite.setPosition(positionMenu.x + 95, positionMenu.y + 310);
         window.draw(blueSprite);
 
         if (player.getSpell() == 2) {
@@ -131,7 +161,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             sf::Vector2f blueSpriteSize(64.5f, 64.0f);
             sf::Color tempColor = sf::Color::Blue;
             blueSpriteBorder.setSize(blueSpriteSize);
-            blueSpriteBorder.setPosition(positionMenu.x +95, positionMenu.y + 190);
+            blueSpriteBorder.setPosition(positionMenu.x +95, positionMenu.y + 310);
             blueSpriteBorder.setFillColor(sf::Color::Transparent);
             blueSpriteBorder.setOutlineColor(tempColor);
             blueSpriteBorder.setOutlineThickness(3.0f);
@@ -181,6 +211,14 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             if (resumeBtn.getGlobalBounds().contains(worldPos)) {
                 gameState = GameState::Playing;
                 //std::cout << "Resume button clicked!\n";
+            }
+            if (saveBtn.getGlobalBounds().contains(worldPos)) {
+                // handle click
+                //SAVE FILE SCRIPT HERE:
+            }
+            if (loadBtn.getGlobalBounds().contains(worldPos)) {
+                // handle click
+                //LOAD FILE SCRIPT HERE: 
             }
             if (quitBtn.getGlobalBounds().contains(worldPos)) {
                 //std::cout << "Quit button clicked!\n";

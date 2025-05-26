@@ -38,6 +38,8 @@ public:
 	GameManager(sf::RenderWindow& window, Player& player);
 	GameState gameState;
 	sf::RectangleShape resumeBtn;
+	sf::RectangleShape saveBtn;
+	sf::RectangleShape loadBtn;
 	sf::RectangleShape quitBtn;
 	sf::Sprite redSprite;
 	sf::Sprite blueSprite;
