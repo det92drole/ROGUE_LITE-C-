@@ -530,7 +530,6 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				bool hitWall = (grid[tempY - 1][tempX] == 0 && it->getY() <= tempY + it->getEpsilon());
 				bool hitCorner = (grid[tempY - 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
 					it->getY() <= tempY + it->getEpsilon() && it->getX() + .645f >= tempX + 1);
-				std::cout << "hitWall: " << hitWall << " hitCorner: " << hitCorner << std::endl;
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {

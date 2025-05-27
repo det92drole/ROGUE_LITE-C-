@@ -10,19 +10,32 @@
 class Renderer;
 
 struct Button {
-	//ON BACK BURNER
 
-	float x;
-	float y;
 	sf::Text btnText;
-	std::string stringText;
-	float height;
-	float width;
 	sf::Texture btnTexture;
 	sf::RectangleShape rect;
-	sf::Vector2f spriteSize;
-	sf::Color fillColor;
-	sf::Color borderColor;
+	sf::Sprite sprite;
+	bool active;
+	bool hasSprite;
+
+	Button() = default;
+
+	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, bool clicked, float menuX, float menuY, int modX, int modY) {
+		rect.setSize(size);
+		rect.setFillColor(sf::Color(100, 100, 250));
+		rect.setPosition(menuX + 20+modX, menuY + 10 + (60 * modY));
+
+		btnText.setFont(font);
+		btnText.setString(text);
+		btnText.setCharacterSize(18);
+		btnText.setFillColor(sf::Color::White);
+		btnText.setPosition(rect.getPosition().x + 20, rect.getPosition().y + 5);
+
+		active = clicked;
+	}
+	sf::RectangleShape* getRect() { return &rect; }
+	sf::Text* getText() { return &btnText; }
+	sf::Sprite* getSprite() { return &sprite; }
 
 };
 
@@ -37,25 +50,40 @@ class GameManager {
 public:
 	GameManager(sf::RenderWindow& window, Player& player);
 	GameState gameState;
-	sf::RectangleShape resumeBtn;
-	sf::RectangleShape saveBtn;
-	sf::RectangleShape loadBtn;
-	sf::RectangleShape quitBtn;
-	sf::Sprite redSprite;
-	sf::Sprite blueSprite;
+	sf::Text title;
+	Button resumeBtn;
+	Button saveBtn;
+	Button loadBtn;
+	Button quitBtn;
+	Button redFBB;
+	Button blueFBB;
+	void updatePos(sf::Vector2f vec);
+
+	sf::RectangleShape menuBorder;
+	sf::RectangleShape saveWindow;
+	sf::Vector2f windowSize;
 	sf::Vector2f worldPos; //mouse position
 	sf::Vector2f worldSize; //referencing game window
+	sf::Vector2f positionMenu;
+	sf::View view;
+
+
 	void drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState);
 	void gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
 		bool left, bool right, bool up, bool down, bool space, KeyManager& keyManager, sf::RenderWindow& window, Renderer& renderer);
 	void drawGame(sf::RenderWindow& window, Player& player, Enemy& enemy, Renderer& renderer, GameState& gameState);
-	
-	std::unordered_map<std::string, Button> buttons;
-
+	std::vector<Button*>& getButtons() {
+		return buttons;
+	}
+	std::vector<Button*>& getEquipment() {
+		return equipment;
+	}
 private:
 	sf::Font font;
 
 	void spawnBtn(sf::RenderWindow& window, Player& player, GameState& gameState);
+	std::vector<Button*> buttons;
+	std::vector<Button*> equipment;
 
 };
 

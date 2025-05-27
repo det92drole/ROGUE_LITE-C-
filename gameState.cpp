@@ -6,166 +6,132 @@ GameManager::GameManager(sf::RenderWindow& window, Player& player) :gameState(Ga
     if (!font.loadFromFile("Assets/Fonts/arial.ttf")) {
         std::cerr << "Failed to load font!\n";
     }
+    windowSize= sf::Vector2f(window.getSize().x / 2.0f, window.getSize().y - window.getSize().y / 4.0f);
 
-    //spawnBtn(window, player, gameState);
-    
+    // Convert screen-space size to world scale by applying the view's scaling
+    view = sf::View(window.getView());
+    float scaleX = view.getSize().x / window.getSize().x;
+    float scaleY = view.getSize().y / window.getSize().y;
+    worldSize= sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
+    positionMenu= sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
+
+    spawnBtn(window, player, gameState); //spawn menu; does not draw
 }
 
 void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& gameState) {
+    
+    //menu border
+    menuBorder.setSize(worldSize);
+    menuBorder.setPosition(positionMenu);
+    menuBorder.setFillColor(sf::Color(255, 0, 0, 100)); // red
+    menuBorder.setOutlineColor(sf::Color::Red);
+    menuBorder.setOutlineThickness(3.0f);
+    //menu title
+    title.setFont(font); // must be accessible from this scope
+    title.setString("Game Paused");
+    title.setCharacterSize(24);
+    title.setFillColor(sf::Color::White);
+    title.setPosition(positionMenu.x + 20, positionMenu.y + 20);
 
-    //ON BACK BURNER
+    //create each button on menu
+    resumeBtn = Button({ 150, 40 }, font, "Resume", false, positionMenu.x, positionMenu.y,1, 1); //1st button
+    buttons.emplace_back(&resumeBtn);
 
-    sf::Vector2f size(window.getSize().x / 2.0f, window.getSize().y - window.getSize().y / 4.0f);
+    saveBtn = Button({ 150, 40 }, font, "Save", false, positionMenu.x, positionMenu.y,1, 2); //2nd button
+    buttons.emplace_back(&saveBtn);
 
-    // Convert screen-space size to world scale by applying the view's scaling
-    sf::View view = window.getView();
-    float scaleX = view.getSize().x / window.getSize().x;
-    float scaleY = view.getSize().y / window.getSize().y;
+    loadBtn = Button({ 150, 40 }, font, "Load", false, positionMenu.x, positionMenu.y,1, 3); //3rd button
+    buttons.emplace_back(&loadBtn);
 
-    sf::Vector2f worldSize(size.x * scaleX, size.y * scaleY);
-    sf::Vector2f positionMenu(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
+    quitBtn = Button({ 150, 40 }, font, "Quit", false, positionMenu.x, positionMenu.y,1, 4); //4th button
+    buttons.emplace_back(&quitBtn);
 
-    //currently two non-equipment buttons
 
-    Button newBtn;
-    newBtn.x;
-    newBtn.y;
-    newBtn.height;
-    newBtn.width;
-    //return newBtn;
+    //create equipment buttons
 
-    buttons[newBtn.stringText] = newBtn;
+    redFBB = Button({ 64.5f, 64 }, font, "RedFireBall", false, positionMenu.x, positionMenu.y,1, 4);
+    redFBB.sprite.setTexture(player.getRedFireTexture());
+    redFBB.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+    redFBB.sprite.setPosition(positionMenu.x + 20, positionMenu.y + 310);
+    redFBB.rect.setPosition(positionMenu.x + 20, positionMenu.y + 310);
+    equipment.emplace_back(&redFBB);
+
+
+    blueFBB = Button({ 64.5f, 64 }, font, "BlueFireBall", false, positionMenu.x, positionMenu.y, 1, 4);
+    blueFBB.sprite.setTexture(player.getBlueFireTexture());
+    blueFBB.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+    blueFBB.sprite.setPosition(positionMenu.x + 95, positionMenu.y + 310);
+    blueFBB.rect.setPosition(positionMenu.x + 95, positionMenu.y + 310);
+    equipment.emplace_back(&blueFBB);
+}
+
+void GameManager::updatePos(sf::Vector2f vec) {
+    menuBorder.setPosition(vec);
+    title.setPosition(vec.x + 20, vec.y + 20);
+    auto& btns = getButtons();
+    for (int i = 0; i < btns.size(); i++) {
+        btns[i]->getRect()->setPosition(vec.x + 20, vec.y + 10 + (60 * (i + 1)));
+        btns[i]->getText()->setPosition(btns[i]->getRect()->getPosition().x + 20, btns[i]->getRect()->getPosition().y + 5);
+
+    }
+    auto& equips = getEquipment();
+    for (int j = 0; j < getEquipment().size(); j++) {
+        equips[j]->getRect()->setPosition(vec.x + 20 + (65 * j), vec.y + 310);
+        equips[j]->getSprite()->setPosition(vec.x + 20 + (65 * j), vec.y + 310);
+
+    }
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
     //std::cout << "DRAW MENU CALLE1" << std::endl;
     if (gameState == GameState::Paused) {
-        //std::cout << "DRAW MENU CALLE2" << std::endl;
 
-        sf::Vector2f size(window.getSize().x / 2.0f, window.getSize().y - window.getSize().y / 4.0f);
+        // RE-EVALUATE screen-space size to world scale by applying the view's scaling
 
-        // Convert screen-space size to world scale by applying the view's scaling
-        sf::View view = window.getView();
+        view = sf::View(window.getView());
         float scaleX = view.getSize().x / window.getSize().x;
         float scaleY = view.getSize().y / window.getSize().y;
+        worldSize = sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
+        positionMenu = sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
 
-        sf::Vector2f worldSize(size.x * scaleX, size.y * scaleY);
+        updatePos(positionMenu);
 
-        // Center the menu around the player's world position
-        sf::Vector2f positionMenu(player.getPosX()*100 - worldSize.x / 2.0f, player.getPosY()*100 - worldSize.y / 2.0f);
-
-        sf::RectangleShape border;
-        border.setSize(worldSize);
-        border.setPosition(positionMenu);
-        border.setFillColor(sf::Color(255, 0, 0, 100)); // red
-        border.setOutlineColor(sf::Color::Red);
-        border.setOutlineThickness(3.0f);
-
-        window.draw(border);
-
-        float width = 150.f; //button size
-        float height = 40.f; //button size
-
-        // ---- TEXT ----
-        sf::Text title;
-        title.setFont(font); // must be accessible from this scope
-        title.setString("Game Paused");
-        title.setCharacterSize(24);
-        title.setFillColor(sf::Color::White);
-        title.setPosition(positionMenu.x + 20, positionMenu.y + 20);
+        // ---- MENU & TITLE ----  
+        window.draw(menuBorder);
         window.draw(title);
 
         // ---- BUTTON: Resume ----
-        
-        resumeBtn.setSize(sf::Vector2f(width, height));
-        resumeBtn.setPosition(positionMenu.x + 20, positionMenu.y + 70);
-        resumeBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
-        window.draw(resumeBtn);
-
-        sf::Text resumeText;
-        resumeText.setFont(font);
-        resumeText.setString("Resume");
-        resumeText.setCharacterSize(18);
-        resumeText.setFillColor(sf::Color::White);
-        resumeText.setPosition(resumeBtn.getPosition().x + 20, resumeBtn.getPosition().y + 5);
-        window.draw(resumeText);
+        window.draw(resumeBtn.rect);
+        window.draw(resumeBtn.btnText);
 
         // ---- BUTTON: Save ----
-        saveBtn.setSize(sf::Vector2f(width, height));
-        saveBtn.setPosition(positionMenu.x + 20, positionMenu.y + 130);
-        saveBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
-        window.draw(saveBtn);
-
-        sf::Text saveText;
-        saveText.setFont(font);
-        saveText.setString("Save");
-        saveText.setCharacterSize(18);
-        saveText.setFillColor(sf::Color::White);
-        saveText.setPosition(saveBtn.getPosition().x + 20, saveBtn.getPosition().y + 5);
-        window.draw(saveText);
+        window.draw(saveBtn.rect);
+        window.draw(saveBtn.btnText);
 
         // ---- BUTTON: Load ----
-        loadBtn.setSize(sf::Vector2f(width, height));
-        loadBtn.setPosition(positionMenu.x + 20, positionMenu.y + 190);
-        loadBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
-        window.draw(loadBtn);
-
-        sf::Text loadText;
-        loadText.setFont(font);
-        loadText.setString("Load");
-        loadText.setCharacterSize(18);
-        loadText.setFillColor(sf::Color::White);
-        loadText.setPosition(loadBtn.getPosition().x + 20, loadBtn.getPosition().y + 5);
-        window.draw(loadText);
+        window.draw(loadBtn.rect);
+        window.draw(loadBtn.btnText);
 
         // ---- BUTTON: Quit ----
-        quitBtn.setSize(sf::Vector2f(width, height));
-        quitBtn.setPosition(positionMenu.x + 20, positionMenu.y + 250);
-        quitBtn.setFillColor(sf::Color(100, 100, 250)); // Blue
-        window.draw(quitBtn);
-
-        sf::Text quitText;
-        quitText.setFont(font);
-        quitText.setString("Quit");
-        quitText.setCharacterSize(18);
-        quitText.setFillColor(sf::Color::White);
-        quitText.setPosition(quitBtn.getPosition().x + 20, quitBtn.getPosition().y + 5);
-        window.draw(quitText);
+        window.draw(quitBtn.rect);
+        window.draw(quitBtn.btnText);
 
         // ---- BUTTON: RED FIREBALL ----
-        redSprite.setTexture(player.getRedFireTexture());
-        redSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
-        redSprite.setPosition(positionMenu.x + 20, positionMenu.y + 310);
-        window.draw(redSprite);
-        
+        window.draw(redFBB.sprite);
         if (player.getSpell() == 1) {
-            sf::RectangleShape redSpriteBorder;
-            sf::Vector2f redSpriteSize(64.5f, 64.0f);
-            sf::Color tempColor = sf::Color::Blue;
-            redSpriteBorder.setSize(redSpriteSize);
-            redSpriteBorder.setPosition(positionMenu.x + 20, positionMenu.y + 310);
-            redSpriteBorder.setFillColor(sf::Color::Transparent);
-            redSpriteBorder.setOutlineColor(tempColor);
-            redSpriteBorder.setOutlineThickness(3.0f);
-            window.draw(redSpriteBorder);
+            redFBB.rect.setFillColor(sf::Color::Transparent);
+            redFBB.rect.setOutlineColor(sf::Color::Blue);
+            redFBB.rect.setOutlineThickness(3.0f);
+            window.draw(redFBB.rect);
         }
 
         // ---- BUTTON: BLUE FIREBALL ----
-        blueSprite.setTexture(player.getBlueFireTexture());
-        blueSprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64)); // Initial frame (x,y,width,height)
-        blueSprite.setPosition(positionMenu.x + 95, positionMenu.y + 310);
-        window.draw(blueSprite);
-
+        window.draw(blueFBB.sprite);
         if (player.getSpell() == 2) {
-            sf::RectangleShape blueSpriteBorder;
-            sf::Vector2f blueSpriteSize(64.5f, 64.0f);
-            sf::Color tempColor = sf::Color::Blue;
-            blueSpriteBorder.setSize(blueSpriteSize);
-            blueSpriteBorder.setPosition(positionMenu.x +95, positionMenu.y + 310);
-            blueSpriteBorder.setFillColor(sf::Color::Transparent);
-            blueSpriteBorder.setOutlineColor(tempColor);
-            blueSpriteBorder.setOutlineThickness(3.0f);
-            window.draw(blueSpriteBorder);
+            blueFBB.rect.setFillColor(sf::Color::Transparent);
+            blueFBB.rect.setOutlineColor(sf::Color::Blue);
+            blueFBB.rect.setOutlineThickness(3.0f);
+            window.draw(blueFBB.rect);
         }
     }
 }
@@ -208,27 +174,30 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             //std::cout << "Mouse clicked at: " << worldPos.x << ", " << worldPos.y << std::endl;
             //std::cout << "button at: " << resumeBtn.getPosition().x << ", " << resumeBtn.getPosition().y << std::endl;
-            if (resumeBtn.getGlobalBounds().contains(worldPos)) {
+            if (resumeBtn.rect.getGlobalBounds().contains(worldPos)) {
                 gameState = GameState::Playing;
                 //std::cout << "Resume button clicked!\n";
             }
-            if (saveBtn.getGlobalBounds().contains(worldPos)) {
+            if (saveBtn.rect.getGlobalBounds().contains(worldPos)) {
                 // handle click
                 //SAVE FILE SCRIPT HERE:
+                std::cout << "SAVE CLICKED" << std::endl;
+                saveBtn.active = true;
+
             }
-            if (loadBtn.getGlobalBounds().contains(worldPos)) {
+            if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
                 // handle click
                 //LOAD FILE SCRIPT HERE: 
             }
-            if (quitBtn.getGlobalBounds().contains(worldPos)) {
+            if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
                 //std::cout << "Quit button clicked!\n";
                 window.close();
             }
-            if (redSprite.getGlobalBounds().contains(worldPos)) {
+            if (redFBB.rect.getGlobalBounds().contains(worldPos)) {
                 // handle click
                 player.setSpell(1);
             }
-            if (blueSprite.getGlobalBounds().contains(worldPos)) {
+            if (blueFBB.rect.getGlobalBounds().contains(worldPos)) {
                 // handle click
                 player.setSpell(2);
             }
