@@ -17,6 +17,8 @@ public:
     void setEsc(bool val) { escape = val; }
     bool getClickLeft() { return clickLeft; }
     void setClickLeft(bool val) { clickLeft = val; }
+    bool saveMenu;
+    std::string input;
 private:
     bool escape;
     bool clickLeft;

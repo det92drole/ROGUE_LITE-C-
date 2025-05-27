@@ -63,6 +63,45 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     blueFBB.sprite.setPosition(positionMenu.x + 95, positionMenu.y + 310);
     blueFBB.rect.setPosition(positionMenu.x + 95, positionMenu.y + 310);
     equipment.emplace_back(&blueFBB);
+
+    //create save menu
+    saveWindow = Menu();
+    saveWindow.menuWindow.setSize(worldSize);
+    saveWindow.menuWindow.setPosition(positionMenu); //will cover main menu
+    saveWindow.menuWindow.setFillColor(sf::Color::Green);
+
+    //save menu title
+    saveWindow.windowTitle.setFont(font); // must be accessible from this scope
+    saveWindow.windowTitle.setString("Save Menu");
+    saveWindow.windowTitle.setCharacterSize(24);
+    saveWindow.windowTitle.setFillColor(sf::Color::White);
+    saveWindow.windowTitle.setPosition(positionMenu.x + 20, positionMenu.y + 20);
+
+    saveWindow.windowText.setFont(font); // must be accessible from this scope
+    saveWindow.windowText.setString("Name your save file");
+    saveWindow.windowText.setCharacterSize(20);
+    saveWindow.windowText.setFillColor(sf::Color::White);
+    saveWindow.windowText.setPosition(positionMenu.x + 20, positionMenu.y + 60);
+
+    //input box
+
+    saveWindow.inputBox.setSize(sf::Vector2f(150, 40));
+    saveWindow.inputBox.setPosition(positionMenu.x + 20, positionMenu.y + 90);
+    saveWindow.inputBox.setFillColor(sf::Color::White);
+    saveWindow.inputBox.setOutlineThickness(2);
+    saveWindow.inputBox.setOutlineColor(sf::Color::Black);
+
+    saveWindow.inputText.setFont(font);
+    saveWindow.inputText.setCharacterSize(20);
+    saveWindow.inputText.setFillColor(sf::Color::Black);
+    saveWindow.inputText.setPosition(positionMenu.x + 25, positionMenu.y + 95);
+
+    saveFileBtn = Button({ 75, 40 }, font, "Save", false, positionMenu.x+20, positionMenu.y+140, 1, 0); 
+    saveButtons.emplace_back(&saveFileBtn);
+
+    saveCancelBtn = Button({ 75, 40 }, font, "Cancel", false, positionMenu.x + 100, positionMenu.y + 140, 1, 0);
+    saveButtons.emplace_back(&saveCancelBtn);
+
 }
 
 void GameManager::updatePos(sf::Vector2f vec) {
@@ -80,21 +119,33 @@ void GameManager::updatePos(sf::Vector2f vec) {
         equips[j]->getSprite()->setPosition(vec.x + 20 + (65 * j), vec.y + 310);
 
     }
+    saveWindow.menuWindow.setPosition(vec);
+    saveWindow.windowTitle.setPosition(vec.x + 20, vec.y + 20);
+    saveWindow.windowText.setPosition(vec.x + 20, vec.y + 60);
+    saveWindow.inputBox.setPosition(vec.x + 20, vec.y + 90);
+    saveWindow.inputText.setPosition(vec.x + 25, vec.y + 95);
+
+    auto& saves = getSaveButtons();
+    for (int k = 0; k < getSaveButtons().size(); k++) {
+        saves[k]->getRect()->setPosition(vec.x + 20 + (80 * k), vec.y + 140);
+        saves[k]->getText()->setPosition(saves[k]->getRect()->getPosition().x + 5, saves[k]->getRect()->getPosition().y + 5);
+
+    }
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
     //std::cout << "DRAW MENU CALLE1" << std::endl;
     if (gameState == GameState::Paused) {
 
-        // RE-EVALUATE screen-space size to world scale by applying the view's scaling
-
+        // REVALUE screen-space size to world scale by applying the view's scaling
         view = sf::View(window.getView());
         float scaleX = view.getSize().x / window.getSize().x;
         float scaleY = view.getSize().y / window.getSize().y;
         worldSize = sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
         positionMenu = sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
 
-        updatePos(positionMenu);
+        //UPDATE menu pos as player moves through map
+        updatePos(positionMenu); 
 
         // ---- MENU & TITLE ----  
         window.draw(menuBorder);
@@ -133,6 +184,22 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             blueFBB.rect.setOutlineThickness(3.0f);
             window.draw(blueFBB.rect);
         }
+
+        // ----SAVE MENU----
+        if (saveBtn.active) {
+            window.draw(saveWindow.menuWindow);
+            window.draw(saveWindow.windowTitle);
+            window.draw(saveWindow.windowText);
+            window.draw(saveWindow.inputBox);
+            window.draw(saveWindow.inputText);
+
+            window.draw(saveFileBtn.rect);
+            window.draw(saveFileBtn.btnText);
+
+            window.draw(saveCancelBtn.rect);
+            window.draw(saveCancelBtn.btnText);
+            
+        }
     }
 }
 
@@ -141,6 +208,56 @@ void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enem
     player.draw(window);
     enemy.draw(window);
     drawMenu(window, player, gameState);
+}
+
+void saveToFile(std::string& filename, Player& player) {
+    std::cout << "FUNC CALL" << std::endl;
+    std::ofstream outFile(filename+".txt"); //create, open, overwrite
+
+    std::string content = std::string("FILE NAME: ") +filename+ "\n"+
+        std::string("PLAYER: ") + std::string("X: ")+ std::to_string(player.getPosX())+std::string(", Y: ")+ std::to_string(player.getPosY())+"\n"+
+        std::string("GRID: ")+"\n";
+
+    if (!outFile) {
+        std::cerr << "Failed to open file for writing: " << filename << "\n";
+        return;
+    }
+
+    outFile << content;
+
+    for (int i = 0; i < y; i++) {
+        for (int j = 0; j < x; j++) {
+            if (grid[i][j] == 2) {
+                outFile << ","; //path touching wall
+            }
+            if (grid[i][j] == 0) {
+                outFile << "#"; //wall
+            }
+            if (grid[i][j] == 1) {
+                outFile << "."; //path
+            }
+            if (grid[i][j] == 3) {
+                outFile << "@"; //player spawn
+            }
+            if (grid[i][j] == 4) {
+                outFile << "$"; //exit
+            }
+            if (grid[i][j] == 5) {
+                outFile << "*"; //worm path
+            }
+            if (grid[i][j] == 6) {
+                outFile << "!"; //item/key
+            }
+            if (grid[i][j] == 7) {
+                outFile << "%"; //edge wall
+            }
+        }
+        outFile << "\n";
+    }
+
+    outFile.close();
+    std::cout << "file saved" << std::endl;
+
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
@@ -174,34 +291,61 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             //std::cout << "Mouse clicked at: " << worldPos.x << ", " << worldPos.y << std::endl;
             //std::cout << "button at: " << resumeBtn.getPosition().x << ", " << resumeBtn.getPosition().y << std::endl;
-            if (resumeBtn.rect.getGlobalBounds().contains(worldPos)) {
-                gameState = GameState::Playing;
-                //std::cout << "Resume button clicked!\n";
+            if (saveBtn.active) {
+                if (saveWindow.inputBox.getGlobalBounds().contains(worldPos)) {
+                    // handle click
+                    saveWindow.target = true;
+                    keyManager.saveMenu = true;
+                    saveWindow.inputBox.setOutlineColor(sf::Color::Blue);
+                }
+                else {
+                    saveWindow.target = false;
+                    saveWindow.inputBox.setOutlineColor(sf::Color::Black);
+                }
+                if (saveCancelBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    saveBtn.active = false;
+                }
+                if (saveFileBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    //save .txt file
+                    std::cout << "button press" << std::endl;
+                    saveToFile(keyManager.input, player);
+                }
             }
-            if (saveBtn.rect.getGlobalBounds().contains(worldPos)) {
-                // handle click
-                //SAVE FILE SCRIPT HERE:
-                std::cout << "SAVE CLICKED" << std::endl;
-                saveBtn.active = true;
-
-            }
-            if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
-                // handle click
-                //LOAD FILE SCRIPT HERE: 
-            }
-            if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
-                //std::cout << "Quit button clicked!\n";
-                window.close();
-            }
-            if (redFBB.rect.getGlobalBounds().contains(worldPos)) {
-                // handle click
-                player.setSpell(1);
-            }
-            if (blueFBB.rect.getGlobalBounds().contains(worldPos)) {
-                // handle click
-                player.setSpell(2);
-            }
+            else {
+                if (resumeBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    gameState = GameState::Playing;
+                    //std::cout << "Resume button clicked!\n";
+                }
+                if (saveBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    // handle click
+                    //SAVE FILE SCRIPT HERE:
+                    std::cout << "SAVE CLICKED" << std::endl;
+                    saveBtn.active = true;
+                }
+                if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    // handle click
+                    //LOAD FILE SCRIPT HERE: 
+                }
+                if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
+                    //std::cout << "Quit button clicked!\n";
+                    window.close();
+                }
+                if (redFBB.rect.getGlobalBounds().contains(worldPos)) {
+                    // handle click
+                    player.setSpell(1);
+                }
+                if (blueFBB.rect.getGlobalBounds().contains(worldPos)) {
+                    // handle click
+                    player.setSpell(2);
+                }
+            }            
         }
+
+        saveWindow.inputText.setString(keyManager.input);
+        if (!saveBtn.active) {
+            keyManager.input.clear();
+        }
+
         drawGame(window, player, enemy, renderer, gameState);
     }
 }

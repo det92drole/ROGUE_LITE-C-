@@ -49,5 +49,17 @@ void KeyManager::update(sf::Event& event) {
         }
     }
 
+    if (saveMenu) {
+        if (event.type == sf::Event::TextEntered) {
+            if (event.text.unicode == '\b') {
+                if (!input.empty())
+                    input.pop_back();
+            }
+            else if (event.text.unicode < 128 && event.text.unicode >= 32) {
+                input += static_cast<char>(event.text.unicode);
+            }
+        }
+    }
+
 }
     
