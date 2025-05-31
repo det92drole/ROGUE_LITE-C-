@@ -22,4 +22,5 @@ public:
 private:
     bool escape;
     bool clickLeft;
+    bool tempLeft;
 };

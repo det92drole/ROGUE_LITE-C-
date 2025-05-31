@@ -7,13 +7,13 @@ bool moveDown = false;
 bool spaceBar = false;
 float moveSpeed = 500.0f;
 
-KeyManager::KeyManager():escape(false), clickLeft(false){
+KeyManager::KeyManager():escape(false), clickLeft(false), tempLeft(false){
     //std::cout << "listening for keystrokes" << std::endl;
 }
 
 void KeyManager::update(sf::Event& event) {
 
-    moveLeft = moveDown = moveUp = moveRight = spaceBar=clickLeft= false;
+    moveLeft = moveDown = moveUp = moveRight = spaceBar=clickLeft=false;
 
     // Check for key presses and update windowManager viewPort
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -45,9 +45,22 @@ void KeyManager::update(sf::Event& event) {
 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
-            clickLeft = true;
+            //click press
+            tempLeft = true;
+            
         }
     }
+    if (tempLeft) {
+        if (event.type == sf::Event::MouseButtonReleased) {
+            if (event.mouseButton.button == sf::Mouse::Left) {
+                //click release
+                clickLeft = true;
+                tempLeft = false;
+            }
+        }
+    }
+    
+    
 
     if (saveMenu) {
         if (event.type == sf::Event::TextEntered) {

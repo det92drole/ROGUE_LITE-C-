@@ -210,20 +210,22 @@ void GameManager::drawGame(sf::RenderWindow& window, Player& player, Enemy& enem
     drawMenu(window, player, gameState);
 }
 
-void saveToFile(std::string& filename, Player& player) {
-    std::cout << "FUNC CALL" << std::endl;
-    std::ofstream outFile(filename+".txt"); //create, open, overwrite
-
-    std::string content = std::string("FILE NAME: ") +filename+ "\n"+
-        std::string("PLAYER: ") + std::string("X: ")+ std::to_string(player.getPosX())+std::string(", Y: ")+ std::to_string(player.getPosY())+"\n"+
-        std::string("GRID: ")+"\n";
+void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
+    std::ofstream outFile("Saves/" + filename + ".txt"); //create, open, overwrite
 
     if (!outFile) {
         std::cerr << "Failed to open file for writing: " << filename << "\n";
         return;
     }
 
+    //DEFINE SAVE DATA
+    std::string content = std::string("FILE NAME: ") +filename+ "\n"+
+        std::string("PLAYER: ") + std::string("X: ")+ std::to_string(player.getPosX())+std::string(", Y: ")+ std::to_string(player.getPosY())+"\n"+
+        std::string("GRID: ")+"\n";
+
     outFile << content;
+
+    //DEFINE MAP DATA FOR SAVE
 
     for (int i = 0; i < y; i++) {
         for (int j = 0; j < x; j++) {
@@ -253,6 +255,20 @@ void saveToFile(std::string& filename, Player& player) {
             }
         }
         outFile << "\n";
+    }
+
+    //ENEMIES
+
+    for (auto it = enemies.getEnemies().begin(); it != enemies.getEnemies().end(); ) {
+        std::string enemiesSave = 
+            std::string("ID: ") + std::to_string(it->getID()) + "\n"+
+            std::string("x: ") + std::to_string(it->getPosX()) + "\n" +
+            std::string("y: ") + std::to_string(it->getPosY()) + "\n" +
+            std::string("speed: ") + std::to_string(it->getSpeed()) + "\n" +
+            std::string("direction: ") + std::to_string(it->getDirection()) + "\n" +
+            std::string("aggro: ") + std::to_string(it->getAgro()) + "\n";
+        outFile << enemiesSave;
+        ++it;
     }
 
     outFile.close();
@@ -296,7 +312,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                     // handle click
                     saveWindow.target = true;
                     keyManager.saveMenu = true;
-                    saveWindow.inputBox.setOutlineColor(sf::Color::Blue);
+                    saveWindow.inputBox.setOutlineColor(sf::Color::Red);
                 }
                 else {
                     saveWindow.target = false;
@@ -308,7 +324,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 if (saveFileBtn.rect.getGlobalBounds().contains(worldPos)) {
                     //save .txt file
                     std::cout << "button press" << std::endl;
-                    saveToFile(keyManager.input, player);
+                    saveToFile(keyManager.input, player, enemy);
                 }
             }
             else {
@@ -338,7 +354,8 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                     // handle click
                     player.setSpell(2);
                 }
-            }            
+            }
+            keyManager.setClickLeft(false);
         }
 
         saveWindow.inputText.setString(keyManager.input);
