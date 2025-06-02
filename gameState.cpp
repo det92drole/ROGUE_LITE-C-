@@ -1,5 +1,6 @@
 #include "gameState.h"
-
+#include "tinyfiledialogs.h"
+#include <filesystem>
 
 
 GameManager::GameManager(sf::RenderWindow& window, Player& player) :gameState(GameState::Playing) {
@@ -221,34 +222,35 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
     //DEFINE SAVE DATA
     
     //DEFINE MAP DATA FOR SAVE
-    std::string mapData= std::string("MAP") + "\n";
+    std::string mapData = std::string("MAP") + "\n";
+
     outFile << mapData;
 
     for (int i = 0; i < y; i++) {
         for (int j = 0; j < x; j++) {
             if (grid[i][j] == 2) {
-                outFile << ","; //path touching wall
+                outFile << "2"; //path touching wall
             }
             if (grid[i][j] == 0) {
-                outFile << "#"; //wall
+                outFile << "0"; //wall
             }
             if (grid[i][j] == 1) {
-                outFile << "."; //path
+                outFile << "1"; //path
             }
             if (grid[i][j] == 3) {
-                outFile << "@"; //player spawn
+                outFile << "3"; //player spawn
             }
             if (grid[i][j] == 4) {
-                outFile << "$"; //exit
+                outFile << "4"; //exit
             }
             if (grid[i][j] == 5) {
-                outFile << "*"; //worm path
+                outFile << "5"; //worm path
             }
             if (grid[i][j] == 6) {
-                outFile << "!"; //item/key
+                outFile << "6"; //item/key
             }
             if (grid[i][j] == 7) {
-                outFile << "%"; //edge wall
+                outFile << "7"; //edge wall
             }
         }
         outFile << "\n";
@@ -267,6 +269,7 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
     //ENEMIES
 
     for (auto it = enemies.getEnemies().begin(); it != enemies.getEnemies().end(); ) {
+        int agro = static_cast<int>(it->getAgro());
         std::string enemiesSave = 
             std::string("ENEMY") + "\n"+
             std::to_string(it->getID()) + "\n"+
@@ -274,7 +277,8 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
             std::to_string(it->getPosY()) + "\n" +
             std::to_string(it->getSpeed()) + "\n" +
             std::to_string(it->getDirection()) + "\n" +
-            std::to_string(it->getAgro()) + "\n";
+            std::to_string(agro) + "\n"+
+            std::to_string(it->getTextSelect())+"\n";
         outFile << enemiesSave;
         outFile << "\n";
         ++it;
@@ -284,6 +288,104 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
     outFile.close();
 
     std::cout << "file saved" << std::endl;
+}
+
+void loadFile(Player& player, Enemy& enemies) {
+    std::cout << "Working directory: " << std::filesystem::current_path() << "\n";
+    const char* filters[] = { "*.txt" };
+    const char* path = tinyfd_openFileDialog(
+        "Select File",
+        "Saves/",  // This sets initial directory + pre-fills the file
+        1,
+        filters,
+        "Save Files (*.txt)",
+        0);
+    if (!path) {
+        std::cout << "No file selected.\n";
+        return;
+    }
+    std::ifstream file(path);
+    if (!file) {
+        std::cerr << "Failed to open file.\n";
+        return;
+    }
+    std::string label;
+    std::string line;
+    enemies.getEnemies().clear();
+    grid.clear(); //empty current grid
+
+    while (file >> label) {
+        if (label == "MAP") {
+            std::getline(file, line);  // skip rest of the "MAP" line
+            while (std::getline(file, line)) {
+                if (line.empty()) break; // stop on empty line
+                std::vector<int> row;
+                for (char c : line) {
+                    if (isdigit(c)) {
+                        row.push_back(c - '0');  // convert char to int
+                    }
+                }
+                grid.push_back(row);
+            }
+        }
+        else if (label == "PLAYER") {
+            int spell, keyCount;
+            float xPos, yPos;
+            file >> spell >> keyCount >> xPos>> yPos;
+            player.setSpell(spell);
+            player.setKeyCount(keyCount);
+            player.setPosX(xPos);
+            player.setPosY(yPos);
+            player.getSprite().setPosition(xPos * squareSize, yPos * squareSize);
+
+            std::cout << "Player loaded to tile: (" << xPos << ", " << yPos << ")\n";
+            std::cout << "Sprite position: (" << xPos * squareSize << ", " << yPos * squareSize << ")\n";
+        }
+        else if (label == "ENEMY") {
+            int ID, dir, agro, texture;
+            float xPos, yPos, speed;
+            file >> ID >> xPos >> yPos>>speed>>dir>>agro>>texture;
+            Enemy enemy;
+            enemy.setID(ID);
+            enemy.setPosX(xPos);
+            enemy.setPosY(yPos);
+            enemy.setDirection(dir);
+            enemy.setFrame(std::rand() % 8);
+            enemy.setAgro(agro);
+            enemy.setTextSelect(texture);
+
+            switch (texture) {
+            case 0: {
+                //brain
+                enemy.setWidthPx(60);
+                enemy.setHeightPx(102);
+                break;
+            }
+            case 1: {
+                //red
+                enemy.setWidthPx(78);
+                enemy.setHeightPx(105);
+                break;
+            }
+            case 2: {
+                //tusk
+                enemy.setWidthPx(66);
+                enemy.setHeightPx(84);
+                break;
+            }
+            }
+            std::cout << "Loaded " << Enemy::getTextures().size() << " enemy textures\n";
+            std::cout << "Assigning texture " << texture << " to enemy\n";
+            if (texture < Enemy::getTextures().size()) {
+                enemy.getSprite().setTexture(*Enemy::getTextures()[texture]);
+            }
+            enemy.getSprite().setPosition(xPos * squareSize, yPos * squareSize);
+            enemy.getSprite().setTextureRect(sf::IntRect(enemy.getFrame() * enemy.getWidthPx(), 0, enemy.getWidthPx(), enemy.getHeightPx()));
+
+            enemies.getEnemies().emplace_back(enemy);
+        }
+    }
+
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
@@ -351,6 +453,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
                     // handle click
                     //LOAD FILE SCRIPT HERE: 
+                    loadFile(player, enemy);
                 }
                 if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
                     //std::cout << "Quit button clicked!\n";

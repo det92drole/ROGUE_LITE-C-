@@ -46,6 +46,10 @@ std::vector<Enemy>& Enemy::getEnemies() {
 		return enemyArr;
 }
 
+std::vector<std::shared_ptr<sf::Texture>>& Enemy::getTextures() {
+	return textures;
+}
+
 void Enemy::update(sf::Time deltaTime) {
 	//updated sprite animation
 	
@@ -249,7 +253,6 @@ void Enemy::draw(sf::RenderWindow& window) {
 void Enemy::spawnEnemies() {
 	
 	int enemyRand = std::rand() % 3;
-
 	Enemy::textures.clear();
 
 	if (Enemy::textures.empty()) {
@@ -279,6 +282,8 @@ void Enemy::spawnEnemies() {
 		enemy.direction = std::rand() % 4;
 		enemy.frame = std::rand() % 8;
 		enemy.agro = false;
+		enemy.setTextSelect(enemyRand);
+
 
 		switch (enemyRand) {
 			case 0: {

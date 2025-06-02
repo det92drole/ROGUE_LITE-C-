@@ -35,6 +35,13 @@ public:
     void setAgro(bool val) { agro = val; }
     bool getAgro() { return agro; }
     int getID() { return id; }
+    void setID(int val) { id = val; }
+    void setFrame(int val) { frame = val; }
+    int getFrame() { return frame; }
+    void setTextSelect(int val) { textSelect = val; }
+    int getTextSelect() { return textSelect; }
+    static std::vector<std::shared_ptr<sf::Texture>>& getTextures();
+    sf::Sprite& getSprite() { return sprite; }
 
 
 private:
@@ -54,6 +61,7 @@ private:
     int widthPx;
     int heightPx;
     bool agro;
+    int textSelect;
 
     //static std::vector<Enemy> enemyArr;
 
