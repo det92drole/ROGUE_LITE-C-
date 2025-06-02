@@ -219,13 +219,10 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
     }
 
     //DEFINE SAVE DATA
-    std::string content = std::string("FILE NAME: ") +filename+ "\n"+
-        std::string("PLAYER: ") + std::string("X: ")+ std::to_string(player.getPosX())+std::string(", Y: ")+ std::to_string(player.getPosY())+"\n"+
-        std::string("GRID: ")+"\n";
-
-    outFile << content;
-
+    
     //DEFINE MAP DATA FOR SAVE
+    std::string mapData= std::string("MAP") + "\n";
+    outFile << mapData;
 
     for (int i = 0; i < y; i++) {
         for (int j = 0; j < x; j++) {
@@ -256,24 +253,37 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
         }
         outFile << "\n";
     }
+    outFile << "\n";
+
+    //PLAYER SAVE
+    std::string playerData = std::string("PLAYER") + "\n" + //type
+        std::to_string(player.getSpell()) + "\n" + //player equiped spell
+        std::to_string(player.getKeyCount()) + "\n" + //key count
+        std::to_string(player.getPosX()) + "\n" + //player x pos
+        std::to_string(player.getPosY()) + "\n"; //player y pos
+
+    outFile << playerData;
 
     //ENEMIES
 
     for (auto it = enemies.getEnemies().begin(); it != enemies.getEnemies().end(); ) {
         std::string enemiesSave = 
-            std::string("ID: ") + std::to_string(it->getID()) + "\n"+
-            std::string("x: ") + std::to_string(it->getPosX()) + "\n" +
-            std::string("y: ") + std::to_string(it->getPosY()) + "\n" +
-            std::string("speed: ") + std::to_string(it->getSpeed()) + "\n" +
-            std::string("direction: ") + std::to_string(it->getDirection()) + "\n" +
-            std::string("aggro: ") + std::to_string(it->getAgro()) + "\n";
+            std::string("ENEMY") + "\n"+
+            std::to_string(it->getID()) + "\n"+
+            std::to_string(it->getPosX()) + "\n" +
+            std::to_string(it->getPosY()) + "\n" +
+            std::to_string(it->getSpeed()) + "\n" +
+            std::to_string(it->getDirection()) + "\n" +
+            std::to_string(it->getAgro()) + "\n";
         outFile << enemiesSave;
+        outFile << "\n";
         ++it;
     }
 
+    //END SAVE FUNC CLOSE FILE & COUT
     outFile.close();
-    std::cout << "file saved" << std::endl;
 
+    std::cout << "file saved" << std::endl;
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
