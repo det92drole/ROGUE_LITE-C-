@@ -33,7 +33,7 @@ struct Button {
 
 	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, bool clicked, float menuX, float menuY, int modX, int modY) {
 		rect.setSize(size);
-		rect.setFillColor(sf::Color(100, 100, 250));
+		rect.setFillColor(sf::Color(100, 100, 250, 225));
 		rect.setPosition(menuX + (20 * modX), menuY + 10 + (60 * modY));
 
 		btnText.setFont(font);

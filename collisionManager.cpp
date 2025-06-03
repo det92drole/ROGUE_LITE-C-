@@ -37,7 +37,80 @@ bool pointInBox(float fX, float fY, float fH, float fW, float eX, float eY, floa
 	float qMinY = std::min(q1y, q4y);
 	float qMaxY = std::max(q1y, q4y);
 
-	return (fX > qMinX) && (fX < qMaxX) && (fY > qMinY) && (fY < qMaxY);
+	if ((p1x > qMinX) && (p1x < qMaxX) && (p1y > qMinY) && (p1y < qMaxY)) {
+		//if top left corner hits target
+		return true;
+	}
+	if ((p2x > qMinX) && (p2x < qMaxX) && (p2y > qMinY) && (p2y < qMaxY)) {
+		//if top right corner
+		return true;
+	}
+	if ((p3x > qMinX) && (p3x < qMaxX) && (p3y > qMinY) && (p3y < qMaxY)) {
+		//if bottom right
+		return true;
+	}
+	if ((p4x > qMinX) && (p4x < qMaxX) && (p4y > qMinY) && (p4y < qMaxY)) {
+		//if bottom left
+		return true;
+	}
+	return false;
+}
+
+bool hitWall(Player& player, int moveDir) {
+	//ISSUE AREA
+	int intPlayerX = static_cast<int>(player.getPosX());
+	int intPlayerY = static_cast<int>(player.getPosY());
+
+	switch (moveDir) 
+	{
+	case 0:
+	{
+		if ((grid[intPlayerY - 1][intPlayerX] == 0) || (grid[intPlayerY - 1][intPlayerX] == 7)) {
+			return true;
+		}
+		if ((grid[intPlayerY - 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
+			(grid[intPlayerY - 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
+			return true;
+		}
+		break;
+	}
+
+	case 1:
+	{
+		if ((grid[intPlayerY][intPlayerX + 1] == 0) || (grid[intPlayerY][intPlayerX + 1] == 7)) {
+			return true;
+		}
+		if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) ||
+			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerY + 1) != y - 1)) {
+			return true;
+		}
+		break;
+	}
+	case 2:
+	{
+		if ((grid[intPlayerY + 1][intPlayerX] == 0) || (grid[intPlayerY + 1][intPlayerX] == 7)) {
+			return true;
+		}
+		if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
+			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
+			return true;
+		}
+		break;
+	}
+	case 3:
+	{
+		if ((grid[intPlayerY][intPlayerX - 1] == 0) || (grid[intPlayerY][intPlayerX - 1] == 7)) {
+			return true;
+		}
+		if ((grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) ||
+			(grid[intPlayerY + 1][intPlayerX - 1] == 7 && (intPlayerY + 1) != y - 1)) {
+			return true;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy& enemy) {
@@ -303,6 +376,92 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		player.setCanMove(false);
 		break;
 	}
+}
+
+void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
+	float pX = player.getPosX()*squareSize;
+	float pY = player.getPosY() * squareSize;
+	float pH = player.getSprite().getLocalBounds().height;
+	float pW = player.getSprite().getLocalBounds().width;
+
+	float eX,eY,eH,eW;
+
+	for (auto it = enemy.getEnemies().begin(); it != enemy.getEnemies().end();) {
+		eX = it->getPosX() * squareSize;
+		eY = it->getPosY() * squareSize;
+		eH = it->getHeightPx();
+		eW = it->getWidthPx();
+
+		if (pointInBox(pX, pY, pH, pW, eX, eY, eH, eW)) {
+			player.getSprite().setColor(sf::Color::Red);
+			player.setFlashTimer(0.15f); // flash for 150 ms
+			
+			float hitPush = .32f;
+			int hitDir = 1;
+			float knockback;
+			int playerDir = player.getDirection();
+			int enemyDir = it->getDirection();
+			int pushDir = enemyDir;
+
+			// Reverse if both are moving in same direction
+			if (player.getIsMoving() && playerDir == enemyDir) {
+				//hitDir = -1; // Reverse the push
+				pushDir = (playerDir + 2) % 4; // Reverse direction as well
+			}
+			else if (player.getIsMoving()) {
+				pushDir = (playerDir + 2) % 4;
+			}
+
+			knockback = hitPush * hitDir;
+
+			float xOffset = 0, yOffset = 0;
+			switch (pushDir) {
+			case 0: yOffset = knockback*-1; break; // Up
+			case 1: xOffset = knockback; break;  // Right
+			case 2: yOffset = knockback; break;  // Down
+			case 3: xOffset = knockback*-1; break; // Left
+			}
+
+			float intPlayerX = player.getPosX();
+			float intPlayerY = player.getPosY();
+			float bufferPEC = 0.2;
+
+			player.setPosX(player.getPosX() + xOffset);
+			player.setPosY(player.getPosY() + yOffset);
+
+			// Wall collision override
+			//if (hitWall(player, pushDir)) {
+			//	std::cout << "WALL HIT" << std::endl;
+			//	std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+			//		<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+			//		<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+
+			//	if (pushDir == 0 || pushDir == 2)
+			//		player.setPosY(intPlayerY + ((pushDir == 0) ? 
+			//			buffer : (player.getSprite().getLocalBounds().height / 100) - bufferPEC));
+			//	else
+			//		player.setPosX(intPlayerX + ((pushDir == 3) ? 
+			//			(player.getSprite().getLocalBounds().width / 100) - buffer : bufferPEC));
+			//}
+			//else {
+			//	std::cout << "NO WALL" << std::endl;
+			//	std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+			//		<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+			//		<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+			//	player.setPosX(player.getPosX() + xOffset);
+			//	player.setPosY(player.getPosY() + yOffset);
+			//}
+		}			
+		++it;
+	}
+
+	if (player.getFlashTimer() > 0.0f) {
+		player.setFlashTimer(player.getFlashTimer() - deltaTime.asSeconds());
+		if (player.getFlashTimer() <= 0.0f) {
+			player.getSprite().setColor(sf::Color::White); // reset tint
+		}
+	}
+
 }
 
 void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
@@ -626,4 +785,5 @@ void collisions(Player& player, int exitX, int exitY, int direction, Enemy& enem
 	checkPlayerWall(player, exitX, exitY, direction, enemy);
 	checkEnemyWall(enemy, deltaTime, player);
 	updateFireBalls(player, enemy);
+	playerAndEnemyCheck(player, enemy, deltaTime);
 }

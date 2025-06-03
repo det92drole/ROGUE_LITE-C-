@@ -13,7 +13,7 @@ GameManager::GameManager(sf::RenderWindow& window, Player& player) :gameState(Ga
     view = sf::View(window.getView());
     float scaleX = view.getSize().x / window.getSize().x;
     float scaleY = view.getSize().y / window.getSize().y;
-    worldSize= sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
+    worldSize = sf::Vector2f((windowSize.x * scaleX) , (windowSize.y * scaleY));
     positionMenu= sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
 
     spawnBtn(window, player, gameState); //spawn menu; does not draw
@@ -69,7 +69,7 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     saveWindow = Menu();
     saveWindow.menuWindow.setSize(worldSize);
     saveWindow.menuWindow.setPosition(positionMenu); //will cover main menu
-    saveWindow.menuWindow.setFillColor(sf::Color::Green);
+    saveWindow.menuWindow.setFillColor(sf::Color(255,0,0,100)); //green
 
     //save menu title
     saveWindow.windowTitle.setFont(font); // must be accessible from this scope
@@ -79,7 +79,7 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     saveWindow.windowTitle.setPosition(positionMenu.x + 20, positionMenu.y + 20);
 
     saveWindow.windowText.setFont(font); // must be accessible from this scope
-    saveWindow.windowText.setString("Name your save file");
+    saveWindow.windowText.setString("Name your save");
     saveWindow.windowText.setCharacterSize(20);
     saveWindow.windowText.setFillColor(sf::Color::White);
     saveWindow.windowText.setPosition(positionMenu.x + 20, positionMenu.y + 60);
@@ -148,43 +148,7 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
         //UPDATE menu pos as player moves through map
         updatePos(positionMenu); 
 
-        // ---- MENU & TITLE ----  
-        window.draw(menuBorder);
-        window.draw(title);
-
-        // ---- BUTTON: Resume ----
-        window.draw(resumeBtn.rect);
-        window.draw(resumeBtn.btnText);
-
-        // ---- BUTTON: Save ----
-        window.draw(saveBtn.rect);
-        window.draw(saveBtn.btnText);
-
-        // ---- BUTTON: Load ----
-        window.draw(loadBtn.rect);
-        window.draw(loadBtn.btnText);
-
-        // ---- BUTTON: Quit ----
-        window.draw(quitBtn.rect);
-        window.draw(quitBtn.btnText);
-
-        // ---- BUTTON: RED FIREBALL ----
-        window.draw(redFBB.sprite);
-        if (player.getSpell() == 1) {
-            redFBB.rect.setFillColor(sf::Color::Transparent);
-            redFBB.rect.setOutlineColor(sf::Color::Blue);
-            redFBB.rect.setOutlineThickness(3.0f);
-            window.draw(redFBB.rect);
-        }
-
-        // ---- BUTTON: BLUE FIREBALL ----
-        window.draw(blueFBB.sprite);
-        if (player.getSpell() == 2) {
-            blueFBB.rect.setFillColor(sf::Color::Transparent);
-            blueFBB.rect.setOutlineColor(sf::Color::Blue);
-            blueFBB.rect.setOutlineThickness(3.0f);
-            window.draw(blueFBB.rect);
-        }
+        
 
         // ----SAVE MENU----
         if (saveBtn.active) {
@@ -200,6 +164,45 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             window.draw(saveCancelBtn.rect);
             window.draw(saveCancelBtn.btnText);
             
+        }
+        else {
+            // ---- MENU & TITLE ----  
+            window.draw(menuBorder);
+            window.draw(title);
+
+            // ---- BUTTON: Resume ----
+            window.draw(resumeBtn.rect);
+            window.draw(resumeBtn.btnText);
+
+            // ---- BUTTON: Save ----
+            window.draw(saveBtn.rect);
+            window.draw(saveBtn.btnText);
+
+            // ---- BUTTON: Load ----
+            window.draw(loadBtn.rect);
+            window.draw(loadBtn.btnText);
+
+            // ---- BUTTON: Quit ----
+            window.draw(quitBtn.rect);
+            window.draw(quitBtn.btnText);
+
+            // ---- BUTTON: RED FIREBALL ----
+            window.draw(redFBB.sprite);
+            if (player.getSpell() == 1) {
+                redFBB.rect.setFillColor(sf::Color::Transparent);
+                redFBB.rect.setOutlineColor(sf::Color::Blue);
+                redFBB.rect.setOutlineThickness(3.0f);
+                window.draw(redFBB.rect);
+            }
+
+            // ---- BUTTON: BLUE FIREBALL ----
+            window.draw(blueFBB.sprite);
+            if (player.getSpell() == 2) {
+                blueFBB.rect.setFillColor(sf::Color::Transparent);
+                blueFBB.rect.setOutlineColor(sf::Color::Blue);
+                blueFBB.rect.setOutlineThickness(3.0f);
+                window.draw(blueFBB.rect);
+            }
         }
     }
 }
@@ -291,7 +294,7 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
 }
 
 void loadFile(Player& player, Enemy& enemies) {
-    std::cout << "Working directory: " << std::filesystem::current_path() << "\n";
+    //std::cout << "Working directory: " << std::filesystem::current_path() << "\n";
     const char* filters[] = { "*.txt" };
     const char* path = tinyfd_openFileDialog(
         "Select File",
@@ -338,8 +341,8 @@ void loadFile(Player& player, Enemy& enemies) {
             player.setPosY(yPos);
             player.getSprite().setPosition(xPos * squareSize, yPos * squareSize);
 
-            std::cout << "Player loaded to tile: (" << xPos << ", " << yPos << ")\n";
-            std::cout << "Sprite position: (" << xPos * squareSize << ", " << yPos * squareSize << ")\n";
+            //std::cout << "Player loaded to tile: (" << xPos << ", " << yPos << ")\n";
+            //std::cout << "Sprite position: (" << xPos * squareSize << ", " << yPos * squareSize << ")\n";
         }
         else if (label == "ENEMY") {
             int ID, dir, agro, texture;
@@ -374,8 +377,8 @@ void loadFile(Player& player, Enemy& enemies) {
                 break;
             }
             }
-            std::cout << "Loaded " << Enemy::getTextures().size() << " enemy textures\n";
-            std::cout << "Assigning texture " << texture << " to enemy\n";
+            //std::cout << "Loaded " << Enemy::getTextures().size() << " enemy textures\n";
+            //std::cout << "Assigning texture " << texture << " to enemy\n";
             if (texture < Enemy::getTextures().size()) {
                 enemy.getSprite().setTexture(*Enemy::getTextures()[texture]);
             }
@@ -435,7 +438,6 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 }
                 if (saveFileBtn.rect.getGlobalBounds().contains(worldPos)) {
                     //save .txt file
-                    std::cout << "button press" << std::endl;
                     saveToFile(keyManager.input, player, enemy);
                 }
             }
@@ -445,13 +447,10 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                     //std::cout << "Resume button clicked!\n";
                 }
                 if (saveBtn.rect.getGlobalBounds().contains(worldPos)) {
-                    // handle click
                     //SAVE FILE SCRIPT HERE:
-                    std::cout << "SAVE CLICKED" << std::endl;
                     saveBtn.active = true;
                 }
                 if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
-                    // handle click
                     //LOAD FILE SCRIPT HERE: 
                     loadFile(player, enemy);
                 }
@@ -460,11 +459,9 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                     window.close();
                 }
                 if (redFBB.rect.getGlobalBounds().contains(worldPos)) {
-                    // handle click
                     player.setSpell(1);
                 }
                 if (blueFBB.rect.getGlobalBounds().contains(worldPos)) {
-                    // handle click
                     player.setSpell(2);
                 }
             }

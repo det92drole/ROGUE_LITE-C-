@@ -59,8 +59,6 @@ void KeyManager::update(sf::Event& event) {
             }
         }
     }
-    
-    
 
     if (saveMenu) {
         if (event.type == sf::Event::TextEntered) {
@@ -73,6 +71,5 @@ void KeyManager::update(sf::Event& event) {
             }
         }
     }
-
 }
     

@@ -80,6 +80,9 @@ public:
 
     int getSpell() { return equipedSpell; }
     void setSpell(int val) { equipedSpell = val; }
+    void setFlashTimer(float val) { hitFlashTimer = val; }
+    float getFlashTimer() { return hitFlashTimer; }
+    bool getIsMoving() { return isMoving; }
 
 private:
 
@@ -97,10 +100,13 @@ private:
     int frame;
     float frameTime;
     float elapsedTime;
+    float hitFlashTimer;
     float playerPosX, playerPosY;
+    float prevX, prevY;
     int playerHealth;
     int direction;
     bool canMove;
+    bool isMoving;
     int keyCount;
     int equipedSpell;
     static std::vector<Player> playerArr;

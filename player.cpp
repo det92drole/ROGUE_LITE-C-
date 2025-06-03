@@ -2,7 +2,9 @@
 #include <iostream>
 #include "rand.h"
 
-Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0), equipedSpell(0) {
+Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), 
+	playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0), 
+	equipedSpell(0), hitFlashTimer(0.0f) {
 	if (!loadTextures()) {
 		std::cerr << "Error: Failed to load one or more player textures.\n";
 		// Optional: handle error, e.g., set a fallback texture or throw an exception
@@ -77,24 +79,30 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	elapsedTime += deltaTime.asSeconds();
 	int intPlayerX = static_cast<int>(getPosX());
 	int intPlayerY = static_cast<int>(getPosY());
+	isMoving = false;
 
 	if (left) {
 		direction = 3;
 		moveSpeed = 0.02f;
-
+		prevX = playerPosX;
+		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
+			
 			playerPosX -= moveSpeed;
 			sprite.setTexture(tL);// change texture for left move
+
 		}
 	}
 
 	if (right) {
 		direction = 1;
 		moveSpeed = 0.02f;
-
+		prevX = playerPosX;
+		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
+			
 			playerPosX += moveSpeed;
 			sprite.setTexture(tR);// change texture for up move
 		}
@@ -103,9 +111,11 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	if (up) {
 		direction = 0;
 		moveSpeed = 0.02f;
-
+		prevX = playerPosX;
+		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
+			
 			playerPosY -= moveSpeed;
 			sprite.setTexture(tU);// change texture for up move
 		}
@@ -114,9 +124,11 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	if (down) {
 		direction = 2;
 		moveSpeed = 0.02f;
-
+		prevX = playerPosX;
+		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
+			
 			playerPosY += moveSpeed;
 			sprite.setTexture(tD);// change texture for up move
 		}
@@ -128,6 +140,8 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 			sprite.setTextureRect(sf::IntRect(frame * 48, 0, 48, 68));
 			elapsedTime = 0.0f;
 		}
+		isMoving = (std::abs(playerPosX - prevX) > 0.01f ||
+			std::abs(playerPosY - prevY) > 0.01f);;
 	}
 	else { //idle animation here
 		sprite.setTextureRect(sf::IntRect(0, 0, 48, 68));
