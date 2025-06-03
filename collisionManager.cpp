@@ -57,7 +57,6 @@ bool pointInBox(float fX, float fY, float fH, float fW, float eX, float eY, floa
 }
 
 bool hitWall(Player& player, int moveDir) {
-	//ISSUE AREA
 	int intPlayerX = static_cast<int>(player.getPosX());
 	int intPlayerY = static_cast<int>(player.getPosY());
 
@@ -67,10 +66,12 @@ bool hitWall(Player& player, int moveDir) {
 	{
 		if ((grid[intPlayerY - 1][intPlayerX] == 0) || (grid[intPlayerY - 1][intPlayerX] == 7)) {
 			return true;
-		}
-		if ((grid[intPlayerY - 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
+		}else if ((grid[intPlayerY - 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
 			(grid[intPlayerY - 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
 			return true;
+		}
+		else {
+			return false;
 		}
 		break;
 	}
@@ -79,10 +80,12 @@ bool hitWall(Player& player, int moveDir) {
 	{
 		if ((grid[intPlayerY][intPlayerX + 1] == 0) || (grid[intPlayerY][intPlayerX + 1] == 7)) {
 			return true;
-		}
-		if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) ||
+		}else if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) ||
 			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerY + 1) != y - 1)) {
 			return true;
+		}
+		else {
+			return false;
 		}
 		break;
 	}
@@ -90,10 +93,12 @@ bool hitWall(Player& player, int moveDir) {
 	{
 		if ((grid[intPlayerY + 1][intPlayerX] == 0) || (grid[intPlayerY + 1][intPlayerX] == 7)) {
 			return true;
-		}
-		if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
+		}else if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
 			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
 			return true;
+		}
+		else {
+			return false;
 		}
 		break;
 	}
@@ -101,14 +106,17 @@ bool hitWall(Player& player, int moveDir) {
 	{
 		if ((grid[intPlayerY][intPlayerX - 1] == 0) || (grid[intPlayerY][intPlayerX - 1] == 7)) {
 			return true;
-		}
-		if ((grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) ||
+		}else if ((grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) ||
 			(grid[intPlayerY + 1][intPlayerX - 1] == 7 && (intPlayerY + 1) != y - 1)) {
 			return true;
+		}
+		else {
+			return false;
 		}
 		break;
 	}
 	default:
+		return false;
 		break;
 	}
 }
@@ -426,31 +434,31 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 			float intPlayerY = player.getPosY();
 			float bufferPEC = 0.2;
 
-			player.setPosX(player.getPosX() + xOffset);
-			player.setPosY(player.getPosY() + yOffset);
+			//player.setPosX(player.getPosX() + xOffset);
+			//player.setPosY(player.getPosY() + yOffset);
 
 			// Wall collision override
-			//if (hitWall(player, pushDir)) {
-			//	std::cout << "WALL HIT" << std::endl;
-			//	std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-			//		<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-			//		<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+			if (hitWall(player, pushDir)) {
+				std::cout << "WALL HIT" << std::endl;
+				std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+					<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+					<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
 
-			//	if (pushDir == 0 || pushDir == 2)
-			//		player.setPosY(intPlayerY + ((pushDir == 0) ? 
-			//			buffer : (player.getSprite().getLocalBounds().height / 100) - bufferPEC));
-			//	else
-			//		player.setPosX(intPlayerX + ((pushDir == 3) ? 
-			//			(player.getSprite().getLocalBounds().width / 100) - buffer : bufferPEC));
-			//}
-			//else {
-			//	std::cout << "NO WALL" << std::endl;
-			//	std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-			//		<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-			//		<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
-			//	player.setPosX(player.getPosX() + xOffset);
-			//	player.setPosY(player.getPosY() + yOffset);
-			//}
+				if (pushDir == 0 || pushDir == 2)
+					player.setPosY(intPlayerY + ((pushDir == 0) ? 
+						buffer : (player.getSprite().getLocalBounds().height / 100) - bufferPEC));
+				else
+					player.setPosX(intPlayerX + ((pushDir == 3) ? 
+						(player.getSprite().getLocalBounds().width / 100) - buffer : bufferPEC));
+			}
+			else {
+				std::cout << "NO WALL" << std::endl;
+				std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+					<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+					<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+				player.setPosX(player.getPosX() + xOffset);
+				player.setPosY(player.getPosY() + yOffset);
+			}
 		}			
 		++it;
 	}
