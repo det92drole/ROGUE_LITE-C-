@@ -60,7 +60,7 @@ bool pointInBox(float fX, float fY, float fH, float fW, float eX, float eY, floa
 bool hitWall(Player& player, int moveDir) {
 	int intPlayerX = static_cast<int>(player.getPosX());
 	int intPlayerY = static_cast<int>(player.getPosY());
-	std::cout << "moveDir" << moveDir << std::endl;
+
 	switch (moveDir) 
 	{
 	case 0:
@@ -448,7 +448,6 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 			player.getSprite().setColor(sf::Color::Red);
 			player.setFlashTimer(0.15f); // flash for 150 ms
 			
-			int hitDir = 1;
 			float knockback;
 			int playerDir = player.getDirection();
 			int enemyDir = it->getDirection();
@@ -456,14 +455,13 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 
 			// Reverse if both are moving in same direction
 			if (player.getIsMoving() && playerDir == enemyDir) {
-				//hitDir = -1; // Reverse the push
 				pushDir = (playerDir + 2) % 4; // Reverse direction as well
 			}
 			else if (player.getIsMoving()) {
 				pushDir = (playerDir + 2) % 4;
 			}
 
-			knockback = hitPush * hitDir;
+			knockback = hitPush;
 
 			float xOffset = 0, yOffset = 0;
 			switch (pushDir) {
@@ -481,29 +479,18 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 
 			// Wall collision override
 			if (hitWall(player, pushDir)) {
-				//std::cout << "WALL HIT" << std::endl;
-				//std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-				//	<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-				//	<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
-
 				//snap to wall
 				if (pushDir == 0 || pushDir == 2) {
 					player.setPosY(intPlayerY + ((pushDir == 0) ? 
 						buffer: (1.0f - (player.getSprite().getLocalBounds().height / 100)) - buffer));
 				}
 				else {
-					std::cout << "wall hit" << std::endl;
 					player.setPosX(intPlayerX + ((pushDir == 3) ? buffer : 
 						(1.0f - (player.getSprite().getLocalBounds().width / 100)) - buffer));
-					std::cout << intPlayerX << std::endl;
 
 				}
 			}
 			else {
-				//std::cout << "NO WALL" << std::endl;
-				//std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-				//	<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-				//	<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
 				player.setPosX(player.getPosX() + xOffset);
 				player.setPosY(player.getPosY() + yOffset);
 			}

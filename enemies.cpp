@@ -54,7 +54,11 @@ void Enemy::update(sf::Time deltaTime) {
 	//updated sprite animation
 	
 	for (auto it = getEnemies().begin(); it != getEnemies().end(); ) {
-		it->elapsedTime += deltaTime.asSeconds();
+		int agroMod = 1;
+		if (it->getAgro()) {
+			agroMod = 2;
+		}
+		it->elapsedTime += deltaTime.asSeconds()*agroMod;
 		if (it->elapsedTime >= it->frameTime) {
 			it->frame = (it->frame + 1) % 8;
 			it->sprite.setTextureRect(sf::IntRect(it->frame * it->getWidthPx(), 0, it->getWidthPx(), it->getHeightPx()));

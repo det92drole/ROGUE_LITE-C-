@@ -61,25 +61,36 @@ class GameManager {
 public:
 	GameManager(sf::RenderWindow& window, Player& player);
 	GameState gameState;
+
+	//MAIN MENU
+	sf::RectangleShape menuBorder;
 	sf::Text title;
 	Button resumeBtn;
 	Button saveBtn;
 	Button loadBtn;
 	Button quitBtn;
+	void updatePos(sf::Vector2f vec);
+
+	//SAVE MENU
+	Menu saveWindow;
 	Button redFBB;
 	Button blueFBB;
 	Button saveFileBtn;
 	Button saveCancelBtn;
-	void updatePos(sf::Vector2f vec);
 
-	sf::RectangleShape menuBorder;
-	Menu saveWindow;
+	//HUD
+	Menu statusBarMenu;
+	sf::RectangleShape hpBar;
+	sf::RectangleShape manaBar;
+	Button equippedSpell;
+
+	//
 	sf::Vector2f windowSize;
 	sf::Vector2f worldPos; //mouse position
 	sf::Vector2f worldSize; //referencing game window
 	sf::Vector2f positionMenu;
 	sf::View view;
-
+	sf::View uiView;
 
 	void drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState);
 	void gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 

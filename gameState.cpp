@@ -11,6 +11,7 @@ GameManager::GameManager(sf::RenderWindow& window, Player& player) :gameState(Ga
 
     // Convert screen-space size to world scale by applying the view's scaling
     view = sf::View(window.getView());
+    uiView= sf::View((sf::FloatRect(0, 0, window.getSize().x, window.getSize().y)));
     float scaleX = view.getSize().x / window.getSize().x;
     float scaleY = view.getSize().y / window.getSize().y;
     worldSize = sf::Vector2f((windowSize.x * scaleX) , (windowSize.y * scaleY));
@@ -27,6 +28,7 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     menuBorder.setFillColor(sf::Color(255, 0, 0, 100)); // red
     menuBorder.setOutlineColor(sf::Color::Red);
     menuBorder.setOutlineThickness(3.0f);
+
     //menu title
     title.setFont(font); // must be accessible from this scope
     title.setString("Game Paused");
@@ -47,16 +49,38 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     quitBtn = Button({ 150, 40 }, font, "Quit", false, positionMenu.x, positionMenu.y,1, 4); //4th button
     buttons.emplace_back(&quitBtn);
 
+    //status menu
+    sf::Vector2f statusSize = { 208.5f, 64.0f }; //(64.5*3)+(5*3)
+    sf::Vector2f statusPos = view.getCenter() - ((view.getSize() / 2.f));
+    statusBarMenu = Menu();
+    statusBarMenu.menuWindow.setSize(statusSize);
+    statusBarMenu.menuWindow.setPosition(10,10);
+    statusBarMenu.menuWindow.setFillColor(sf::Color(0, 0, 0, 100)); 
+    statusBarMenu.menuWindow.setOutlineColor(sf::Color::Red);
+    statusBarMenu.menuWindow.setOutlineThickness(3.0f);
 
+    sf::Vector2f barSize = { 134.0f,12.8f };
+    //health bar; 12.8h x 134w
+    hpBar.setSize(barSize);
+    hpBar.setPosition(10 + 64.5 + 5, 12.8 * 2);
+    hpBar.setFillColor(sf::Color(255, 0, 0, 255)); // red
+
+    //mana bar
+    manaBar.setSize(barSize);
+    manaBar.setPosition(10 + 64.5 + 5, 12.8*4);
+    manaBar.setFillColor(sf::Color(0, 0, 255, 255)); // red
+
+    //spell equipped
+    equippedSpell = Button({ 64.5,64.0 }, font, "E", false, 10, 10, 1, 1);
+    equippedSpell.sprite.setPosition(10, 10);
     //create equipment buttons
-
+    //
     redFBB = Button({ 64.5f, 64 }, font, "RedFireBall", false, positionMenu.x, positionMenu.y,1, 4);
     redFBB.sprite.setTexture(player.getRedFireTexture());
     redFBB.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
     redFBB.sprite.setPosition(positionMenu.x + 20, positionMenu.y + 310);
     redFBB.rect.setPosition(positionMenu.x + 20, positionMenu.y + 310);
     equipment.emplace_back(&redFBB);
-
 
     blueFBB = Button({ 64.5f, 64 }, font, "BlueFireBall", false, positionMenu.x, positionMenu.y, 1, 4);
     blueFBB.sprite.setTexture(player.getBlueFireTexture());
@@ -130,26 +154,31 @@ void GameManager::updatePos(sf::Vector2f vec) {
     for (int k = 0; k < getSaveButtons().size(); k++) {
         saves[k]->getRect()->setPosition(vec.x + 20 + (80 * k), vec.y + 140);
         saves[k]->getText()->setPosition(saves[k]->getRect()->getPosition().x + 5, saves[k]->getRect()->getPosition().y + 5);
-
     }
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
-    //std::cout << "DRAW MENU CALLE1" << std::endl;
+    
+    // screen-space size to world scale by applying the view's scaling
+    view = sf::View(window.getView());
+    float scaleX = view.getSize().x / window.getSize().x;
+    float scaleY = view.getSize().y / window.getSize().y;
+    worldSize = sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
+    positionMenu = sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
+    //UPDATE menu pos as player moves through map
+    updatePos(positionMenu);
+
+    //----HUD START----
+    window.setView(uiView);
+    window.draw(statusBarMenu.menuWindow);
+    window.draw(hpBar);
+    window.draw(manaBar);
+    window.draw(equippedSpell.sprite);
+
+    //----HUD END----
+
+    window.setView(view);
     if (gameState == GameState::Paused) {
-
-        // REVALUE screen-space size to world scale by applying the view's scaling
-        view = sf::View(window.getView());
-        float scaleX = view.getSize().x / window.getSize().x;
-        float scaleY = view.getSize().y / window.getSize().y;
-        worldSize = sf::Vector2f(windowSize.x * scaleX, windowSize.y * scaleY);
-        positionMenu = sf::Vector2f(player.getPosX() * 100 - worldSize.x / 2.0f, player.getPosY() * 100 - worldSize.y / 2.0f);
-
-        //UPDATE menu pos as player moves through map
-        updatePos(positionMenu); 
-
-        
-
         // ----SAVE MENU----
         if (saveBtn.active) {
             window.draw(saveWindow.menuWindow);
@@ -192,6 +221,9 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
                 redFBB.rect.setFillColor(sf::Color::Transparent);
                 redFBB.rect.setOutlineColor(sf::Color::Blue);
                 redFBB.rect.setOutlineThickness(3.0f);
+                equippedSpell.sprite.setTexture(player.getRedFireTexture());
+                equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+
                 window.draw(redFBB.rect);
             }
 
@@ -201,6 +233,9 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
                 blueFBB.rect.setFillColor(sf::Color::Transparent);
                 blueFBB.rect.setOutlineColor(sf::Color::Blue);
                 blueFBB.rect.setOutlineThickness(3.0f);
+                equippedSpell.sprite.setTexture(player.getBlueFireTexture());
+                equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+
                 window.draw(blueFBB.rect);
             }
         }
