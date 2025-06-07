@@ -2,6 +2,7 @@
 
 float buffer = 0.02f;
 float epsilon = 0.02f;
+float hitPush = .32f;
 
 void startNewLevel(Player& player, Enemy& enemy) {
 	//std::cout << "key count: " << player.getKeyCount() << std::endl;
@@ -59,16 +60,26 @@ bool pointInBox(float fX, float fY, float fH, float fW, float eX, float eY, floa
 bool hitWall(Player& player, int moveDir) {
 	int intPlayerX = static_cast<int>(player.getPosX());
 	int intPlayerY = static_cast<int>(player.getPosY());
-
+	std::cout << "moveDir" << moveDir << std::endl;
 	switch (moveDir) 
 	{
 	case 0:
 	{
 		if ((grid[intPlayerY - 1][intPlayerX] == 0) || (grid[intPlayerY - 1][intPlayerX] == 7)) {
-			return true;
+			if (player.getPosY() - hitPush <= intPlayerY + epsilon) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}else if ((grid[intPlayerY - 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
 			(grid[intPlayerY - 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
-			return true;
+			if (player.getPosY() - hitPush <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -79,10 +90,20 @@ bool hitWall(Player& player, int moveDir) {
 	case 1:
 	{
 		if ((grid[intPlayerY][intPlayerX + 1] == 0) || (grid[intPlayerY][intPlayerX + 1] == 7)) {
-			return true;
+			if (player.getPosX() + .48+hitPush >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
+				return true;
+			}
+			else {
+				return false;
+			}
 		}else if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerY + 1) != y - 1) ||
 			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerY + 1) != y - 1)) {
-			return true;
+			if (player.getPosX() + .48+hitPush >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -92,10 +113,20 @@ bool hitWall(Player& player, int moveDir) {
 	case 2:
 	{
 		if ((grid[intPlayerY + 1][intPlayerX] == 0) || (grid[intPlayerY + 1][intPlayerX] == 7)) {
-			return true;
+			if (player.getPosY() +hitPush+ .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
+				return true;
+			}
+			else {
+				return false;
+			}
 		}else if ((grid[intPlayerY + 1][intPlayerX + 1] == 0 && (intPlayerX + 1) != x - 1) ||
 			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1)) {
-			return true;
+			if (player.getPosY() + .68 +hitPush>= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -105,10 +136,23 @@ bool hitWall(Player& player, int moveDir) {
 	case 3:
 	{
 		if ((grid[intPlayerY][intPlayerX - 1] == 0) || (grid[intPlayerY][intPlayerX - 1] == 7)) {
-			return true;
+
+			if (player.getPosX() -hitPush<= intPlayerX + epsilon) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			
 		}else if ((grid[intPlayerY + 1][intPlayerX - 1] == 0 && (intPlayerY + 1) != y - 1) ||
 			(grid[intPlayerY + 1][intPlayerX - 1] == 7 && (intPlayerY + 1) != y - 1)) {
-			return true;
+
+			if (player.getPosX() - hitPush <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;
@@ -404,7 +448,6 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 			player.getSprite().setColor(sf::Color::Red);
 			player.setFlashTimer(0.15f); // flash for 150 ms
 			
-			float hitPush = .32f;
 			int hitDir = 1;
 			float knockback;
 			int playerDir = player.getDirection();
@@ -430,32 +473,37 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 			case 3: xOffset = knockback*-1; break; // Left
 			}
 
-			float intPlayerX = player.getPosX();
-			float intPlayerY = player.getPosY();
-			float bufferPEC = 0.2;
+			int intPlayerX = static_cast<int>(player.getPosX());
+			int intPlayerY = static_cast<int>(player.getPosY());
 
-			//player.setPosX(player.getPosX() + xOffset);
-			//player.setPosY(player.getPosY() + yOffset);
+			it->setPosX(it->getPosX() - xOffset);
+			it->setPosY(it->getPosY() - yOffset);
 
 			// Wall collision override
 			if (hitWall(player, pushDir)) {
-				std::cout << "WALL HIT" << std::endl;
-				std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-					<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-					<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+				//std::cout << "WALL HIT" << std::endl;
+				//std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+				//	<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+				//	<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
 
-				if (pushDir == 0 || pushDir == 2)
+				//snap to wall
+				if (pushDir == 0 || pushDir == 2) {
 					player.setPosY(intPlayerY + ((pushDir == 0) ? 
-						buffer : (player.getSprite().getLocalBounds().height / 100) - bufferPEC));
-				else
-					player.setPosX(intPlayerX + ((pushDir == 3) ? 
-						(player.getSprite().getLocalBounds().width / 100) - buffer : bufferPEC));
+						buffer: (1.0f - (player.getSprite().getLocalBounds().height / 100)) - buffer));
+				}
+				else {
+					std::cout << "wall hit" << std::endl;
+					player.setPosX(intPlayerX + ((pushDir == 3) ? buffer : 
+						(1.0f - (player.getSprite().getLocalBounds().width / 100)) - buffer));
+					std::cout << intPlayerX << std::endl;
+
+				}
 			}
 			else {
-				std::cout << "NO WALL" << std::endl;
-				std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
-					<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
-					<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
+				//std::cout << "NO WALL" << std::endl;
+				//std::cout << "PlayerDir: " << playerDir << ", EnemyDir: " << enemyDir
+				//	<< ", PushDir: " << pushDir << ", HitDir: " << hitDir
+				//	<< ", xOffset: " << xOffset << ", yOffset: " << yOffset << '\n';
 				player.setPosX(player.getPosX() + xOffset);
 				player.setPosY(player.getPosY() + yOffset);
 			}
