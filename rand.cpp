@@ -78,7 +78,7 @@ bool isPathAvailable(const std::vector<std::vector<int>>& grid, int startX, int 
             int ny = y + dy;
 
             if (nx >= 0 && ny >= 0 && nx < cols && ny < rows &&
-                !visited[ny][nx] && grid[ny][nx] != 0) {
+                !visited[ny][nx] && grid[ny][nx] != 0 && grid[ny][nx] != 7) {
                 visited[ny][nx] = true;
                 q.push({ nx, ny });
             }

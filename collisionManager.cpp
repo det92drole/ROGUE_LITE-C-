@@ -450,7 +450,7 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 				player.setHealth(player.getHealth() - 10);
 				player.setIsHit(true);
 			}
-			player.setFlashTimer(0.15f); // flash for 150 ms
+			player.setFlashTimer(0.30f); // flash for 150 ms
 			
 			float knockback;
 			int playerDir = player.getDirection();
