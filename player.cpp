@@ -4,7 +4,7 @@
 
 Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), 
 	playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0), 
-	equipedSpell(0), hitFlashTimer(0.0f) {
+	equipedSpell(0), hitFlashTimer(0.0f), isHit(false), playerMana(100) {
 	if (!loadTextures()) {
 		std::cerr << "Error: Failed to load one or more player textures.\n";
 		// Optional: handle error, e.g., set a fallback texture or throw an exception
@@ -81,6 +81,18 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	int intPlayerY = static_cast<int>(getPosY());
 	isMoving = false;
 
+	//mana regen
+	float duration = 30.f;           // total time in seconds
+	float target = 100.f;
+	float speed = target / duration; // = 3.333...
+	setMana(getMana() + (speed * deltaTime.asSeconds()));
+	std::cout << "mana 1: " << getMana() << std::endl;
+	if (getMana() > target) {
+		setMana(target);
+		std::cout << "mana 2: " << getMana() << std::endl;
+
+	}
+
 	if (left) {
 		direction = 3;
 		moveSpeed = 0.02f;
@@ -148,55 +160,58 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	}
 
 	if (spaceBar && fireCooldownClock.getElapsedTime().asSeconds() > fireCooldown) {
-		auto newFireball = createFireBall(getPosX(), getPosY(), equipedSpell);
-		if (newFireball) {
-			switch (direction) {
-			case 3:
-			{
-				// only left true left
-				newFireball->direction = 3;
-				newFireball->speed = -0.1f;
-				newFireball->widthPx = 64.5;
-				newFireball->heightPx = 64;
-				getFireBalls().push_back(*newFireball);
-				break;
-			}
-			case 1:
-			{
-				// only right true right
-				newFireball->direction = 1;
-				newFireball->speed = 0.1f;
-				newFireball->widthPx = 64.5;
-				newFireball->heightPx = 64;
-				getFireBalls().push_back(*newFireball);
-				break;
-			}
-			case 0:
-			{
-				// only up true up
-				newFireball->direction = 0;
-				newFireball->speed = -0.1f;
-				newFireball->widthPx = 64.5;
-				newFireball->heightPx = 64;
-				getFireBalls().push_back(*newFireball);
-				break;
-			}
-			case 2:
-			{
-				// only down true down
-				newFireball->direction = 2;
-				newFireball->speed = 0.1f;
-				newFireball->widthPx = 64.5;
-				newFireball->heightPx = 64;
-				getFireBalls().push_back(*newFireball);
-				break;
-			}
-			default:
-			{
-				// unknown
-				//do not fire
-				break;
-			}
+		if (getMana()>=20) {
+			setMana(getMana() - 20);
+			auto newFireball = createFireBall(getPosX(), getPosY(), equipedSpell);
+			if (newFireball) {
+				switch (direction) {
+				case 3:
+				{
+					// only left true left
+					newFireball->direction = 3;
+					newFireball->speed = -0.1f;
+					newFireball->widthPx = 64.5;
+					newFireball->heightPx = 64;
+					getFireBalls().push_back(*newFireball);
+					break;
+				}
+				case 1:
+				{
+					// only right true right
+					newFireball->direction = 1;
+					newFireball->speed = 0.1f;
+					newFireball->widthPx = 64.5;
+					newFireball->heightPx = 64;
+					getFireBalls().push_back(*newFireball);
+					break;
+				}
+				case 0:
+				{
+					// only up true up
+					newFireball->direction = 0;
+					newFireball->speed = -0.1f;
+					newFireball->widthPx = 64.5;
+					newFireball->heightPx = 64;
+					getFireBalls().push_back(*newFireball);
+					break;
+				}
+				case 2:
+				{
+					// only down true down
+					newFireball->direction = 2;
+					newFireball->speed = 0.1f;
+					newFireball->widthPx = 64.5;
+					newFireball->heightPx = 64;
+					getFireBalls().push_back(*newFireball);
+					break;
+				}
+				default:
+				{
+					// unknown
+					//do not fire
+					break;
+				}
+				}
 			}
 		}
 		// Reset the cooldown clock

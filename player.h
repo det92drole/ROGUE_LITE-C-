@@ -51,6 +51,8 @@ public:
     Item createKey(float x,float y);
     int getHealth() const;
     void setHealth(int health);
+    float getMana() { return playerMana; }
+    void setMana(float val) { playerMana = val; }
     void update(sf::Time deltaTime, bool left, bool right, bool up, bool down, bool space);
     void draw(sf::RenderWindow& window);
     void changeXY(float x, float y);
@@ -83,6 +85,8 @@ public:
     void setFlashTimer(float val) { hitFlashTimer = val; }
     float getFlashTimer() { return hitFlashTimer; }
     bool getIsMoving() { return isMoving; }
+    bool getIsHit() { return isHit; }
+    void setIsHit(bool val) { isHit = val; }
 
 private:
 
@@ -104,9 +108,11 @@ private:
     float playerPosX, playerPosY;
     float prevX, prevY;
     int playerHealth;
+    float playerMana;
     int direction;
     bool canMove;
     bool isMoving;
+    bool isHit;
     int keyCount;
     int equipedSpell;
     static std::vector<Player> playerArr;

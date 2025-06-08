@@ -59,14 +59,17 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     statusBarMenu.menuWindow.setOutlineColor(sf::Color::Red);
     statusBarMenu.menuWindow.setOutlineThickness(3.0f);
 
-    sf::Vector2f barSize = { 134.0f,12.8f };
     //health bar; 12.8h x 134w
-    hpBar.setSize(barSize);
+    hpBarSize = { ((134.0f * player.getHealth()) / 100),12.8f};
+
+    hpBar.setSize(hpBarSize);
     hpBar.setPosition(10 + 64.5 + 5, 12.8 * 2);
     hpBar.setFillColor(sf::Color(255, 0, 0, 255)); // red
 
     //mana bar
-    manaBar.setSize(barSize);
+    manaBarSize = { 134.0f,12.8f };
+
+    manaBar.setSize(manaBarSize);
     manaBar.setPosition(10 + 64.5 + 5, 12.8*4);
     manaBar.setFillColor(sf::Color(0, 0, 255, 255)); // red
 
@@ -158,7 +161,12 @@ void GameManager::updatePos(sf::Vector2f vec) {
 }
 
 void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState) {
-    
+    //update HUD
+    hpBarSize = { ((134.0f * player.getHealth()) / 100),12.8f };
+    hpBar.setSize(hpBarSize);
+    manaBarSize = { ((134.0f * player.getMana()) / 100),12.8f };
+    manaBar.setSize(manaBarSize);
+
     // screen-space size to world scale by applying the view's scaling
     view = sf::View(window.getView());
     float scaleX = view.getSize().x / window.getSize().x;

@@ -81,7 +81,9 @@ public:
 	//HUD
 	Menu statusBarMenu;
 	sf::RectangleShape hpBar;
+	sf::Vector2f hpBarSize;
 	sf::RectangleShape manaBar;
+	sf::Vector2f manaBarSize;
 	Button equippedSpell;
 
 	//

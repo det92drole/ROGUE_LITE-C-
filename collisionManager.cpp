@@ -446,6 +446,10 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 
 		if (pointInBox(pX, pY, pH, pW, eX, eY, eH, eW)) {
 			player.getSprite().setColor(sf::Color::Red);
+			if (!player.getIsHit()) {
+				player.setHealth(player.getHealth() - 10);
+				player.setIsHit(true);
+			}
 			player.setFlashTimer(0.15f); // flash for 150 ms
 			
 			float knockback;
@@ -502,6 +506,7 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 		player.setFlashTimer(player.getFlashTimer() - deltaTime.asSeconds());
 		if (player.getFlashTimer() <= 0.0f) {
 			player.getSprite().setColor(sf::Color::White); // reset tint
+			player.setIsHit(false);
 		}
 	}
 
