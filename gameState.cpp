@@ -37,16 +37,16 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     title.setPosition(positionMenu.x + 20, positionMenu.y + 20);
 
     //create each button on menu
-    resumeBtn = Button({ 150, 40 }, font, "Resume", false, positionMenu.x, positionMenu.y,1, 1); //1st button
+    resumeBtn = Button({ 150, 40 }, font, "Resume", false, positionMenu.x, positionMenu.y,1, 1, true); //1st button
     buttons.emplace_back(&resumeBtn);
 
-    saveBtn = Button({ 150, 40 }, font, "Save", false, positionMenu.x, positionMenu.y,1, 2); //2nd button
+    saveBtn = Button({ 150, 40 }, font, "Save", false, positionMenu.x, positionMenu.y,1, 2, true); //2nd button
     buttons.emplace_back(&saveBtn);
 
-    loadBtn = Button({ 150, 40 }, font, "Load", false, positionMenu.x, positionMenu.y,1, 3); //3rd button
+    loadBtn = Button({ 150, 40 }, font, "Load", false, positionMenu.x, positionMenu.y,1, 3, true); //3rd button
     buttons.emplace_back(&loadBtn);
 
-    quitBtn = Button({ 150, 40 }, font, "Quit", false, positionMenu.x, positionMenu.y,1, 4); //4th button
+    quitBtn = Button({ 150, 40 }, font, "Quit", false, positionMenu.x, positionMenu.y,1, 4, true); //4th button
     buttons.emplace_back(&quitBtn);
 
     //status menu
@@ -74,18 +74,18 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     manaBar.setFillColor(sf::Color(0, 0, 255, 255)); // red
 
     //spell equipped
-    equippedSpell = Button({ 64.5,64.0 }, font, "E", false, 10, 10, 1, 1);
+    equippedSpell = Button({ 64.5,64.0 }, font, "E", true, 10, 10, 1, 1, true);
     equippedSpell.sprite.setPosition(10, 10);
     //create equipment buttons
     //
-    redFBB = Button({ 64.5f, 64 }, font, "RedFireBall", false, positionMenu.x, positionMenu.y,1, 4);
+    redFBB = Button({ 64.5f, 64 }, font, "RedFireBall", true, positionMenu.x, positionMenu.y,1, 4, true);
     redFBB.sprite.setTexture(player.getRedFireTexture());
     redFBB.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
     redFBB.sprite.setPosition(positionMenu.x + 20, positionMenu.y + 310);
     redFBB.rect.setPosition(positionMenu.x + 20, positionMenu.y + 310);
     equipment.emplace_back(&redFBB);
 
-    blueFBB = Button({ 64.5f, 64 }, font, "BlueFireBall", false, positionMenu.x, positionMenu.y, 1, 4);
+    blueFBB = Button({ 64.5f, 64 }, font, "BlueFireBall", true, positionMenu.x, positionMenu.y, 1, 4, true);
     blueFBB.sprite.setTexture(player.getBlueFireTexture());
     blueFBB.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
     blueFBB.sprite.setPosition(positionMenu.x + 95, positionMenu.y + 310);
@@ -124,10 +124,10 @@ void GameManager::spawnBtn(sf::RenderWindow& window, Player& player, GameState& 
     saveWindow.inputText.setFillColor(sf::Color::Black);
     saveWindow.inputText.setPosition(positionMenu.x + 25, positionMenu.y + 95);
 
-    saveFileBtn = Button({ 75, 40 }, font, "Save", false, positionMenu.x+20, positionMenu.y+140, 1, 0); 
+    saveFileBtn = Button({ 75, 40 }, font, "Save", false, positionMenu.x+20, positionMenu.y+140, 1, 0, false); 
     saveButtons.emplace_back(&saveFileBtn);
 
-    saveCancelBtn = Button({ 75, 40 }, font, "Cancel", false, positionMenu.x + 100, positionMenu.y + 140, 1, 0);
+    saveCancelBtn = Button({ 75, 40 }, font, "Cancel", false, positionMenu.x + 100, positionMenu.y + 140, 1, 0, false);
     saveButtons.emplace_back(&saveCancelBtn);
 
 }
@@ -182,39 +182,84 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
     window.draw(hpBar);
     window.draw(manaBar);
     window.draw(equippedSpell.sprite);
-
     //----HUD END----
 
     window.setView(view);
-    if (gameState == GameState::Paused) {
-        // ----SAVE MENU----
-        if (saveBtn.active) {
-            window.draw(saveWindow.menuWindow);
-            window.draw(saveWindow.windowTitle);
-            window.draw(saveWindow.windowText);
-            window.draw(saveWindow.inputBox);
-            window.draw(saveWindow.inputText);
+    if (gameState == GameState::Paused|| gameState == GameState::GameOver) {
+        
+        if (gameState == GameState::Paused) {
+            // ----SAVE MENU----
+            if (saveBtn.active) {
+                window.draw(saveWindow.menuWindow);
+                window.draw(saveWindow.windowTitle);
+                window.draw(saveWindow.windowText);
+                window.draw(saveWindow.inputBox);
+                window.draw(saveWindow.inputText);
 
-            window.draw(saveFileBtn.rect);
-            window.draw(saveFileBtn.btnText);
+                window.draw(saveFileBtn.rect);
+                window.draw(saveFileBtn.btnText);
 
-            window.draw(saveCancelBtn.rect);
-            window.draw(saveCancelBtn.btnText);
-            
+                window.draw(saveCancelBtn.rect);
+                window.draw(saveCancelBtn.btnText);
+
+            }
+            else {
+                // ---- MENU & TITLE ----  
+                window.draw(menuBorder);
+                window.draw(title);
+                auto& buttons = getButtons();
+                for (int i = 0; i < buttons.size(); i++) {
+                    if (buttons[i]->getVisible()) {
+                        window.draw(buttons[i]->rect);
+                        window.draw(buttons[i]->btnText);
+                    }
+                }
+                //// ---- BUTTON: Resume ----
+                //window.draw(resumeBtn.rect);
+                //window.draw(resumeBtn.btnText);
+
+                //// ---- BUTTON: Save ----
+                //window.draw(saveBtn.rect);
+                //window.draw(saveBtn.btnText);
+
+                //// ---- BUTTON: Load ----
+                //window.draw(loadBtn.rect);
+                //window.draw(loadBtn.btnText);
+
+                //// ---- BUTTON: Quit ----
+                //window.draw(quitBtn.rect);
+                //window.draw(quitBtn.btnText);
+
+                // ---- BUTTON: RED FIREBALL ----
+                window.draw(redFBB.sprite);
+                if (player.getSpell() == 1) {
+                    redFBB.rect.setFillColor(sf::Color::Transparent);
+                    redFBB.rect.setOutlineColor(sf::Color::Blue);
+                    redFBB.rect.setOutlineThickness(3.0f);
+                    equippedSpell.sprite.setTexture(player.getRedFireTexture());
+                    equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+
+                    window.draw(redFBB.rect);
+                }
+
+                // ---- BUTTON: BLUE FIREBALL ----
+                window.draw(blueFBB.sprite);
+                if (player.getSpell() == 2) {
+                    blueFBB.rect.setFillColor(sf::Color::Transparent);
+                    blueFBB.rect.setOutlineColor(sf::Color::Blue);
+                    blueFBB.rect.setOutlineThickness(3.0f);
+                    equippedSpell.sprite.setTexture(player.getBlueFireTexture());
+                    equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
+
+                    window.draw(blueFBB.rect);
+                }
+            }
         }
-        else {
+        if (gameState == GameState::GameOver) {
             // ---- MENU & TITLE ----  
+            title.setString("GAME OVER");
             window.draw(menuBorder);
             window.draw(title);
-
-            // ---- BUTTON: Resume ----
-            window.draw(resumeBtn.rect);
-            window.draw(resumeBtn.btnText);
-
-            // ---- BUTTON: Save ----
-            window.draw(saveBtn.rect);
-            window.draw(saveBtn.btnText);
-
             // ---- BUTTON: Load ----
             window.draw(loadBtn.rect);
             window.draw(loadBtn.btnText);
@@ -222,30 +267,6 @@ void GameManager::drawMenu(sf::RenderWindow& window, Player& player, GameState& 
             // ---- BUTTON: Quit ----
             window.draw(quitBtn.rect);
             window.draw(quitBtn.btnText);
-
-            // ---- BUTTON: RED FIREBALL ----
-            window.draw(redFBB.sprite);
-            if (player.getSpell() == 1) {
-                redFBB.rect.setFillColor(sf::Color::Transparent);
-                redFBB.rect.setOutlineColor(sf::Color::Blue);
-                redFBB.rect.setOutlineThickness(3.0f);
-                equippedSpell.sprite.setTexture(player.getRedFireTexture());
-                equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
-
-                window.draw(redFBB.rect);
-            }
-
-            // ---- BUTTON: BLUE FIREBALL ----
-            window.draw(blueFBB.sprite);
-            if (player.getSpell() == 2) {
-                blueFBB.rect.setFillColor(sf::Color::Transparent);
-                blueFBB.rect.setOutlineColor(sf::Color::Blue);
-                blueFBB.rect.setOutlineThickness(3.0f);
-                equippedSpell.sprite.setTexture(player.getBlueFireTexture());
-                equippedSpell.sprite.setTextureRect(sf::IntRect(0, 0, 64.5f, 64));
-
-                window.draw(blueFBB.rect);
-            }
         }
     }
 }
@@ -308,7 +329,10 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
         std::to_string(player.getSpell()) + "\n" + //player equiped spell
         std::to_string(player.getKeyCount()) + "\n" + //key count
         std::to_string(player.getPosX()) + "\n" + //player x pos
-        std::to_string(player.getPosY()) + "\n"; //player y pos
+        std::to_string(player.getPosY()) + "\n" + //player y pos
+        std::to_string(player.getHealth()) + "\n" + //hp
+        std::to_string(player.getMana()) + "\n" + //mana
+        "\n"; 
 
     outFile << playerData;
 
@@ -336,7 +360,7 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
     std::cout << "file saved" << std::endl;
 }
 
-void loadFile(Player& player, Enemy& enemies) {
+void GameManager::loadFile(Player& player, Enemy& enemies, GameState& gameState) {
     //std::cout << "Working directory: " << std::filesystem::current_path() << "\n";
     const char* filters[] = { "*.txt" };
     const char* path = tinyfd_openFileDialog(
@@ -375,14 +399,16 @@ void loadFile(Player& player, Enemy& enemies) {
             }
         }
         else if (label == "PLAYER") {
-            int spell, keyCount;
-            float xPos, yPos;
-            file >> spell >> keyCount >> xPos>> yPos;
+            int spell, keyCount, hp;
+            float xPos, yPos, mana;
+            file >> spell >> keyCount >> xPos>> yPos>>hp>>mana;
             player.setSpell(spell);
             player.setKeyCount(keyCount);
             player.setPosX(xPos);
             player.setPosY(yPos);
             player.getSprite().setPosition(xPos * squareSize, yPos * squareSize);
+            player.setHealth(hp);
+            player.setMana(mana);
 
             //std::cout << "Player loaded to tile: (" << xPos << ", " << yPos << ")\n";
             //std::cout << "Sprite position: (" << xPos * squareSize << ", " << yPos * squareSize << ")\n";
@@ -431,12 +457,18 @@ void loadFile(Player& player, Enemy& enemies) {
             enemies.getEnemies().emplace_back(enemy);
         }
     }
+    gameState = GameState::Paused;
+    title.setString("Game Paused");
 
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
     bool left, bool right, bool up, bool down, bool space, KeyManager& keyManager, sf::RenderWindow& window, Renderer& renderer) {
     //std::cout << keyManager.getEsc() << std::endl;
+    if (player.getHealth() <= 0) {
+        gameState = GameState::GameOver;
+    }
+
     if (gameState == GameState::Playing) {
         // update game world (movement, collisions, etc.)
         if (keyManager.getEsc()) {
@@ -495,7 +527,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
                 }
                 if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
                     //LOAD FILE SCRIPT HERE: 
-                    loadFile(player, enemy);
+                    loadFile(player, enemy, gameState);
                 }
                 if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
                     //std::cout << "Quit button clicked!\n";
@@ -518,4 +550,19 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
 
         drawGame(window, player, enemy, renderer, gameState);
     }
+    else if (gameState == GameState::GameOver) {
+        if (keyManager.getClickLeft()) {
+            worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
+                //LOAD FILE SCRIPT HERE: 
+                loadFile(player, enemy, gameState);
+            }
+            if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
+                //std::cout << "Quit button clicked!\n";
+                window.close();
+            }
+        }
+        keyManager.setClickLeft(false);
+    }
+    drawGame(window, player, enemy, renderer, gameState);
 }

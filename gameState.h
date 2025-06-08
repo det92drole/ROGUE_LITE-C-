@@ -28,10 +28,11 @@ struct Button {
 	sf::Sprite sprite;
 	bool active;
 	bool hasSprite;
+	bool visible;
 
 	Button() = default;
 
-	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, bool clicked, float menuX, float menuY, int modX, int modY) {
+	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, bool click, float menuX, float menuY, int modX, int modY, bool viz) {
 		rect.setSize(size);
 		rect.setFillColor(sf::Color(100, 100, 250, 225));
 		rect.setPosition(menuX + (20 * modX), menuY + 10 + (60 * modY));
@@ -42,11 +43,13 @@ struct Button {
 		btnText.setFillColor(sf::Color::White);
 		btnText.setPosition(rect.getPosition().x + 5, rect.getPosition().y + 5);
 
-		active = clicked;
+		active = click;
+		visible = viz;
 	}
 	sf::RectangleShape* getRect() { return &rect; }
 	sf::Text* getText() { return &btnText; }
 	sf::Sprite* getSprite() { return &sprite; }
+	bool* getVisible() { return &visible; }
 
 };
 
@@ -94,6 +97,7 @@ public:
 	sf::View view;
 	sf::View uiView;
 
+	void loadFile(Player& player, Enemy& enemies, GameState& gameState);
 	void drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState);
 	void gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
 		bool left, bool right, bool up, bool down, bool space, KeyManager& keyManager, sf::RenderWindow& window, Renderer& renderer);
@@ -114,8 +118,6 @@ private:
 	std::vector<Button*> buttons;
 	std::vector<Button*> equipment;
 	std::vector<Button*> saveButtons;
-
-
 };
 
 
