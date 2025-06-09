@@ -36,6 +36,10 @@ public:
     void setID(int val) { id = val; }
     void setFrame(int val) { frame = val; }
     int getFrame() { return frame; }
+    int getPrevX() { return prevX; }
+    int getPrevY() { return prevY; }
+    void setPrevX(int val) { prevX = val; }
+    void setPrevY(int val) { prevY = val; }
 
     void spawnEnemies();
     static std::vector<Enemy>& getEnemies();
@@ -49,6 +53,11 @@ public:
     void setBossTexture(int val) { bossTextSelect = val; }
     int getBossTexture() { return bossTextSelect; }
     static std::vector<std::shared_ptr<sf::Texture>>& getBossTextures(); 
+    void bossMech();
+    std::vector<Enemy*>& getMerge() {
+        return mergeArr;
+    }
+    void merge();
 
 private:
     int id;
@@ -63,6 +72,8 @@ private:
     int widthPx;
     int heightPx;
     bool agro;
+    int prevX;
+    int prevY;
     sf::Sprite sprite;
 
 
@@ -71,4 +82,7 @@ private:
 
     static std::vector<std::shared_ptr<sf::Texture>> texturesBoss;
     int bossTextSelect;
+
+    std::vector<Enemy*> mergeArr;
+
 };

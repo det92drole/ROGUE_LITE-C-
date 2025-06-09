@@ -12,6 +12,7 @@ void startNewLevel(Player& player, Enemy& enemy) {
 	player.setPosY(spawnFloatY);
 	enemy.spawnEnemies();
 	enemy.bossSpawn(exitX, exitY);
+	enemy.merge();
 	player.getKeys().emplace_back(player.createKey(keyX, keyY));
 }
 
@@ -515,9 +516,12 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 
 void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 	//only changes to enemies is direction, speed, x, y
-	if (enemy.getEnemies().size() != 0) {
+	
+	auto& allEnemies = enemy.getMerge();
+
+	if (allEnemies.size() != 0) {
 		if (enemy.getEnemies()[0].getAgro()) { //if enemy agro; movement directed to player
-			for (auto it = enemy.getEnemies().begin(); it != enemy.getEnemies().end(); ) {
+			for (auto* it :allEnemies) {
 				int tempX = static_cast<int>(it->getPosX());
 				int tempY = static_cast<int>(it->getPosY());
 				it->setSpeed(0); //movement no longer determined by speed
@@ -537,11 +541,10 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 				}
 				//std::cout <<"enemy id: "<<it->getID()<< " enemy x: " << it->getPosX() << " enemy Y: " << it->getPosY() << std::endl;
 				//std::cout << "player x: " << player.getPosX() << " player y: " << player.getPosY() << std::endl;
-				++it;
 			}
 		}
 		else { //normal movement
-			for (auto it = enemy.getEnemies().begin(); it != enemy.getEnemies().end(); ) {
+			for (auto* it : allEnemies) {
 				int tempX = static_cast<int>(it->getPosX());
 				int tempY = static_cast<int>(it->getPosY());
 
@@ -553,6 +556,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 					if (tempX <= 0) {
 						it->setSpeed(it->getSpeed() * -1);
 						it->setDirection(1);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
+
 					}
 					else {
 						bool hitWallSide = !grid[tempY][tempX - 1] && it->getPosX() <= tempX + it->getEpsilon();
@@ -565,6 +571,8 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						if (hitWallSide || hitWallCorner|| hitEdge|| hitEdgeCorner) {
 							it->setSpeed(it->getSpeed() * -1);
 							it->setDirection(1);
+							it->setPrevX(tempX);
+							it->setPrevY(tempY);
 						}
 					}
 					break;
@@ -576,6 +584,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						it->setSpeed(it->getSpeed() * -1);
 						//logg << "Speed after: " << it->speed << std::endl;					
 						it->setDirection(3);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
+
 					}
 					else {
 						bool hitWallSide = !grid[tempY][tempX + 1] && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon();
@@ -592,6 +603,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 							it->setSpeed(it->getSpeed() * -1);
 							//logg << "Speed after: " << it->speed << std::endl;					
 							it->setDirection(3);
+							it->setPrevX(tempX);
+							it->setPrevY(tempY);
+
 						}
 					}
 					break;
@@ -604,6 +618,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						it->setSpeed(it->getSpeed() * -1);
 						//logg << "Speed after: " << it->speed << std::endl;					
 						it->setDirection(2);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
+
 					}
 					else {
 						bool hitWallSide = !grid[tempY - 1][tempX] && it->getPosY() <= tempY + it->getEpsilon();
@@ -621,6 +638,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 							it->setSpeed(it->getSpeed() * -1);
 							//logg << "Speed after: " << it->speed << std::endl;					
 							it->setDirection(2);
+							it->setPrevX(tempX);
+							it->setPrevY(tempY);
+
 						}
 					}
 					break;
@@ -633,6 +653,8 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						it->setSpeed(it->getSpeed() * -1);
 						//logg << "Speed after: " << it->speed << std::endl;
 						it->setDirection(0);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
 
 					}
 					else {
@@ -650,6 +672,9 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 							it->setSpeed(it->getSpeed() * -1);
 							//logg << "Speed after: " << it->speed << std::endl;
 							it->setDirection(0);
+							it->setPrevX(tempX);
+							it->setPrevY(tempY);
+
 						}
 					}
 					break;
@@ -659,8 +684,6 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 					//should not happen
 					break;
 				}
-
-				++it;
 			}
 		}
 	}
