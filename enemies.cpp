@@ -6,7 +6,19 @@ Enemy::Enemy()
 	direction(0), speed(0.5f), epsilon(0.2f),
 	widthPx(0), heightPx(0), agro(false)
 {
-	// sprite doesn't need init unless assigning texture here
+	if (Enemy::textures.empty()) {
+		for (int i = 0; i < 3; ++i) {
+			auto tex = std::make_shared<sf::Texture>();
+			std::string path = "Assets/Enemies/" + std::bitset<4>(i).to_string() + ".png";
+
+			if (!tex->loadFromFile(path)) {
+				std::cerr << "Failed to load enemy texture at " << path << std::endl;
+			}
+			else {
+				Enemy::textures.emplace_back(tex);
+			}
+		}
+	}
 }
 
 std::vector<std::shared_ptr<sf::Texture>> Enemy::textures;

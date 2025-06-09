@@ -594,6 +594,7 @@ void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy
             }
             if (loadBtn.rect.getGlobalBounds().contains(worldPos)) {
                 //LOAD FILE SCRIPT HERE: 
+                gameState = GameState::Paused;
                 loadFile(player, enemy, gameState);
             }
             if (quitBtn.rect.getGlobalBounds().contains(worldPos)) {
