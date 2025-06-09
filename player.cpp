@@ -3,7 +3,7 @@
 #include "rand.h"
 
 Player::Player() : playerHealth(100), frame(0), frameTime(0.2f), elapsedTime(0.0f), 
-	playerPosX(spawnFloatX), playerPosY(spawnFloatY), canMove(false), keyCount(0), 
+	playerPosX(0), playerPosY(0), canMove(false), keyCount(0), 
 	equipedSpell(0), hitFlashTimer(0.0f), isHit(false), playerMana(100) {
 	if (!loadTextures()) {
 		std::cerr << "Error: Failed to load one or more player textures.\n";
@@ -86,11 +86,8 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	float target = 100.f;
 	float speed = target / duration; // = 3.333...
 	setMana(getMana() + (speed * deltaTime.asSeconds()));
-	std::cout << "mana 1: " << getMana() << std::endl;
 	if (getMana() > target) {
 		setMana(target);
-		std::cout << "mana 2: " << getMana() << std::endl;
-
 	}
 
 	if (left) {

@@ -32,7 +32,8 @@ struct Button {
 
 	Button() = default;
 
-	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, bool click, float menuX, float menuY, int modX, int modY, bool viz) {
+	Button(const sf::Vector2f& size, const sf::Font& font, const std::string& text, 
+		bool click, float menuX, float menuY, int modX, int modY, bool viz) {
 		rect.setSize(size);
 		rect.setFillColor(sf::Color(100, 100, 250, 225));
 		rect.setPosition(menuX + (20 * modX), menuY + 10 + (60 * modY));
@@ -57,7 +58,8 @@ enum class GameState {
 	Playing,
 	Paused,
 	MainMenu,
-	GameOver
+	GameOver,
+	StartMenu
 };
 
 class GameManager {
@@ -65,7 +67,11 @@ public:
 	GameManager(sf::RenderWindow& window, Player& player);
 	GameState gameState;
 
-	//MAIN MENU
+	//START MENU
+	Menu startMenu;
+	Button newGameBtn;
+
+	//PAUSE MENU
 	sf::RectangleShape menuBorder;
 	sf::Text title;
 	Button resumeBtn;
@@ -96,6 +102,7 @@ public:
 	sf::Vector2f positionMenu;
 	sf::View view;
 	sf::View uiView;
+	sf::Vector2f startMenuSize;
 
 	void loadFile(Player& player, Enemy& enemies, GameState& gameState);
 	void drawMenu(sf::RenderWindow& window, Player& player, GameState& gameState);

@@ -16,14 +16,14 @@ int main() {
     std::srand(std::time(0));  // seed rand with time stamp
     sf::Clock clock;
     KeyManager keyManager;
-    popGrid();
+    //popGrid();
     //printGrid();
     
     //-----GAME ENTITIES-----
     Player player; //created AFTER grid and spawn determined by printGrid();
     Enemy enemy;
-    player.getKeys().emplace_back(player.createKey(keyX, keyY));
-    enemy.spawnEnemies();
+    //player.getKeys().emplace_back(player.createKey(keyX, keyY));
+    //enemy.spawnEnemies();
 
     //-----OBSERVER-----
     sf::Color backgroundColor(58, 9, 235);
