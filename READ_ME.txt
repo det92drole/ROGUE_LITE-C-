@@ -5,3 +5,4 @@ MAP: https://www.kenney.nl/assets/tiny-dungeon
 ITEMS: https://aekae13.itch.io/16x16-dungeon-walls-reconfig
 PLAYER: https://cypor.itch.io/12x12-rpg-tileset
 INCLUDES: SFML, https://sourceforge.net/projects/tinyfiledialogs/
+STONE GOLEM: https://darkpixel-kronovi.itch.io/mecha-golem-free

@@ -11,6 +11,7 @@ void startNewLevel(Player& player, Enemy& enemy) {
 	player.setPosX(spawnFloatX);
 	player.setPosY(spawnFloatY);
 	enemy.spawnEnemies();
+	enemy.bossSpawn(exitX, exitY);
 	player.getKeys().emplace_back(player.createKey(keyX, keyY));
 }
 
