@@ -381,6 +381,23 @@ void saveToFile(std::string& filename, Player& player, Enemy& enemies) {
         ++it;
     }
 
+    //BOSS
+    for (auto it = enemies.getBoss().begin(); it != enemies.getBoss().end(); ) {
+        int agro = static_cast<int>(it->getAgro());
+        std::string bossSave =
+            std::string("BOSS") + "\n" +
+            std::to_string(it->getID()) + "\n" +
+            std::to_string(it->getPosX()) + "\n" +
+            std::to_string(it->getPosY()) + "\n" +
+            std::to_string(it->getSpeed()) + "\n" +
+            std::to_string(it->getDirection()) + "\n" +
+            std::to_string(agro) + "\n" +
+            std::to_string(it->getTextSelect()) + "\n";
+        outFile << bossSave;
+        outFile << "\n";
+        ++it;
+    }
+
     //END SAVE FUNC CLOSE FILE & COUT
     outFile.close();
 
@@ -409,6 +426,8 @@ void GameManager::loadFile(Player& player, Enemy& enemies, GameState& gameState)
     std::string label;
     std::string line;
     enemies.getEnemies().clear();
+    enemies.getBoss().clear();
+
     grid.clear(); //empty current grid
 
     while (file >> label) {
@@ -483,10 +502,41 @@ void GameManager::loadFile(Player& player, Enemy& enemies, GameState& gameState)
 
             enemies.getEnemies().emplace_back(enemy);
         }
+        else if (label == "BOSS") {
+            int ID, dir, agro, texture;
+            float xPos, yPos, speed;
+            file >> ID >> xPos >> yPos >> speed >> dir >> agro >> texture;
+            Enemy enemy;
+            enemy.setID(ID);
+            enemy.setPosX(xPos);
+            enemy.setPosY(yPos);
+            enemy.setDirection(dir);
+            enemy.setAgro(agro);
+            enemy.setTextSelect(texture);
+
+            switch (texture) {
+            case 0: {
+                //STONE
+                enemy.setWidthPx(144);
+                enemy.setHeightPx(159);
+                enemy.setFrame(std::rand() % 10);
+
+                break;
+            }
+            
+            }
+            if (texture < Enemy::getBossTextures().size()) {
+                enemy.getSprite().setTexture(*Enemy::getBossTextures()[texture]);
+            }
+            enemy.getSprite().setPosition(xPos * squareSize, yPos * squareSize);
+            enemy.getSprite().setTextureRect(sf::IntRect(enemy.getFrame() * enemy.getWidthPx(), 0, enemy.getWidthPx(), enemy.getHeightPx()));
+
+            enemies.getBoss().emplace_back(enemy);
+        }
     }
     gameState = GameState::Paused;
     title.setString("Game Paused");
-
+    enemies.merge();
 }
 
 void GameManager::gameCheck(Player& player, int exitX, int exitY, int dir, Enemy& enemy, sf::Time deltaTime, 
