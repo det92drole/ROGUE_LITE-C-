@@ -713,9 +713,13 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 
 	for (auto it = fireballs.begin(); it != fireballs.end(); ) {
 		bool eraseFireball = false;
+		float fBallX = it->getX();
+		float fBallY = it->getY();
+		float fW = it->getWidth() / 100;
+		float fH = it->getHeight() / 100;
 
-		int tempX = static_cast<int>(it->getX());
-		int tempY = static_cast<int>(it->getY());
+		int tempX = static_cast<int>(fBallX);
+		int tempY = static_cast<int>(fBallY);
 
 		// === 1. WALL COLLISION AND MOVEMENT ===
 		switch (it->direction) {
@@ -724,9 +728,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY][tempX - 1] == 0 && it->getX() <= tempX + it->getEpsilon());
+				bool hitWall = (grid[tempY][tempX - 1] == 0 && fBallX <= tempX + it->getEpsilon());
 				bool hitCorner = (grid[tempY + 1][tempX - 1] == 0 && tempY + 1 != y - 1 &&
-					it->getX() <= tempX + it->getEpsilon() && it->getY() + .64f >= tempY + 1);
+					fBallX <= tempX + it->getEpsilon() && fBallY + .64f >= tempY + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -740,7 +744,7 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 					}
 				}
 				else {
-					it->setX(it->getX() + it->getSpeed());
+					it->setX(fBallX + it->getSpeed());
 				}
 			}
 			break;
@@ -750,9 +754,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY][tempX + 1] == 0 && it->getX() + .645f >= tempX + 1 - it->getEpsilon());
+				bool hitWall = (grid[tempY][tempX + 1] == 0 && fBallX + .645f >= tempX + 1 - it->getEpsilon());
 				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempY + 1 != y - 1 &&
-					it->getX() + .645f >= tempX + 1 - it->getEpsilon() && it->getY() + .64f >= tempY + 1);
+					fBallX + .645f >= tempX + 1 - it->getEpsilon() && fBallY + .64f >= tempY + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -766,7 +770,7 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 					}
 				}
 				else {
-					it->setX(it->getX() + it->getSpeed());
+					it->setX(fBallX + it->getSpeed());
 				}
 			}
 			break;
@@ -776,9 +780,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY - 1][tempX] == 0 && it->getY() <= tempY + it->getEpsilon());
+				bool hitWall = (grid[tempY - 1][tempX] == 0 && fBallY <= tempY + it->getEpsilon());
 				bool hitCorner = (grid[tempY - 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
-					it->getY() <= tempY + it->getEpsilon() && it->getX() + .645f >= tempX + 1);
+					fBallY <= tempY + it->getEpsilon() && fBallX + .645f >= tempX + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -792,7 +796,7 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 					}
 				}
 				else {
-					it->setY(it->getY() + it->getSpeed());
+					it->setY(fBallY + it->getSpeed());
 				}
 
 			}
@@ -803,9 +807,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY + 1][tempX] == 0 && it->getY() + .64f >= tempY + 1 - it->getEpsilon());
+				bool hitWall = (grid[tempY + 1][tempX] == 0 && fBallY + .64f >= tempY + 1 - it->getEpsilon());
 				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
-					it->getY() + .64f >= tempY + 1 - it->getEpsilon() && it->getX() + .645f >= tempX + 1);
+					fBallY + .64f >= tempY + 1 - it->getEpsilon() && fBallX + .645f >= tempX + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -818,7 +822,7 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 					}
 				}
 				else {
-					it->setY(it->getY() + it->getSpeed());
+					it->setY(fBallY + it->getSpeed());
 				}
 			}
 			break;
@@ -838,14 +842,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 			float eW = static_cast<float>(e->getWidthPx()) / 100;
 			float eH = static_cast<float>(e->getHeightPx()) / 100;
 
-			float fX = it->getX();
-			float fY = it->getY();
-			float fW = it->getWidth() / 100;
-			float fH = it->getHeight() / 100;
-
 			bool overlap =
-				fX < eX + eW && fX + fW > eX &&
-				fY < eY + eH && fY + fH > eY;
+				fBallX < eX + eW && fBallX + fW > eX &&
+				fBallY < eY + eH && fBallY + fH > eY;
 
 			if (overlap) {
 				std::cout << "HIT" << std::endl;
