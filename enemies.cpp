@@ -101,62 +101,64 @@ std::vector<std::shared_ptr<sf::Texture>>& Enemy::getBossTextures() {
 }
 
 void Enemy::bossMech() {
-	//getBoss()[0].prevX = static_cast<int>(getBoss()[0].getPosX());
+	//boss.prevX = static_cast<int>(getBoss()[0].getPosX());
 	//getBoss()[0].prevY = static_cast<int>(getBoss()[0].getPosY());
-	if (!getBoss()[0].agro) {
-		switch (getBoss()[0].getDirection()) {
+	Enemy& boss = getBoss()[0];
+
+	if (!boss.agro) {
+		switch (boss.getDirection()) {
 		case 0:
 		{
-			if (getBoss()[0].prevY - 3 > getBoss()[0].getPosY()) {
-				getBoss()[0].prevY = static_cast<int>(getBoss()[0].getPosY());
-				getBoss()[0].setDirection(std::rand() % 4);
-				if (getBoss()[0].getDirection() == 0 || getBoss()[0].getDirection() == 3) {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()) * -1);
+			if (boss.getPrevY() - 2 > boss.getPosY()) {
+				boss.setPrevY(static_cast<int>(boss.getPosY()));
+				boss.setDirection(std::rand() % 4);
+				if (boss.getDirection() == 0 || boss.getDirection() == 3) {
+					boss.setSpeed(std::abs(boss.getSpeed()) * -1);
 				}
 				else {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()));
+					boss.setSpeed(std::abs(boss.getSpeed()));
 				}
 			}
 			break;
 		}
 		case 1:
 		{
-			if (getBoss()[0].prevX + 3 > getBoss()[0].getPosX()) {
-				getBoss()[0].prevX = static_cast<int>(getBoss()[0].getPosX());
-				getBoss()[0].setDirection(std::rand() % 4);
-				if (getBoss()[0].getDirection() == 0 || getBoss()[0].getDirection() == 3) {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()) * -1);
+			if (boss.getPrevX() + 2 < boss.getPosX()) {
+				boss.setPrevX(static_cast<int>(boss.getPosX()));
+				boss.setDirection(std::rand() % 4);
+				if (boss.getDirection() == 0 || boss.getDirection() == 3) {
+					boss.setSpeed(std::abs(boss.getSpeed()) * -1);
 				}
 				else {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()));
+					boss.setSpeed(std::abs(boss.getSpeed()));
 				}
 			}
 			break;
 		}
 		case 2:
 		{
-			if (getBoss()[0].prevY + 3 > getBoss()[0].getPosY()) {
-				getBoss()[0].prevY = static_cast<int>(getBoss()[0].getPosY());
-				getBoss()[0].setDirection(std::rand() % 4);
-				if (getBoss()[0].getDirection() == 0 || getBoss()[0].getDirection() == 3) {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()) * -1);
+			if (boss.getPrevY() + 2 < boss.getPosY()) {
+				boss.setPrevY(static_cast<int>(boss.getPosY()));
+				boss.setDirection(std::rand() % 4);
+				if (boss.getDirection() == 0 || boss.getDirection() == 3) {
+					boss.setSpeed(std::abs(boss.getSpeed()) * -1);
 				}
 				else {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()));
+					boss.setSpeed(std::abs(boss.getSpeed()));
 				}
 			}
 			break;
 		}
 		case 3:
 		{
-			if (getBoss()[0].prevX - 3 > getBoss()[0].getPosX()) {
-				getBoss()[0].prevX = static_cast<int>(getBoss()[0].getPosX());
-				getBoss()[0].setDirection(std::rand() % 4);
-				if (getBoss()[0].getDirection() == 0 || getBoss()[0].getDirection() == 3) {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()) * -1);
+			if (boss.getPrevX() - 2 > boss.getPosX()) {
+				boss.setPrevX(static_cast<int>(boss.getPosX()));
+				boss.setDirection(std::rand() % 4);
+				if (boss.getDirection() == 0 || boss.getDirection() == 3) {
+					boss.setSpeed(std::abs(boss.getSpeed()) * -1);
 				}
 				else {
-					getBoss()[0].setSpeed(std::abs(getBoss()[0].getSpeed()));
+					boss.setSpeed(std::abs(boss.getSpeed()));
 				}
 			}
 			break;
@@ -336,6 +338,8 @@ void Enemy::bossSpawn(int exitX, int exitY) {
 	enemy.direction = std::rand() % 4;
 	enemy.agro = false;
 	enemy.setBossTexture(bossRand);
+	enemy.prevX = exitX;
+	enemy.prevY = exitY;
 
 	switch (bossRand) {
 	case 0: {

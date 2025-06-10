@@ -89,16 +89,16 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 	if (getMana() > target) {
 		setMana(target);
 	}
+	moveSpeed = 1.00f;
 
 	if (left) {
 		direction = 3;
-		moveSpeed = 0.02f;
 		prevX = playerPosX;
 		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
 			
-			playerPosX -= moveSpeed;
+			playerPosX -= moveSpeed * deltaTime.asSeconds();
 			sprite.setTexture(tL);// change texture for left move
 
 		}
@@ -106,39 +106,36 @@ void Player::update(sf::Time deltaTime, bool left, bool right, bool up, bool dow
 
 	if (right) {
 		direction = 1;
-		moveSpeed = 0.02f;
 		prevX = playerPosX;
 		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
 			
-			playerPosX += moveSpeed;
+			playerPosX += moveSpeed * deltaTime.asSeconds();
 			sprite.setTexture(tR);// change texture for up move
 		}
 	}
 
 	if (up) {
 		direction = 0;
-		moveSpeed = 0.02f;
 		prevX = playerPosX;
 		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
 			
-			playerPosY -= moveSpeed;
+			playerPosY -= moveSpeed * deltaTime.asSeconds();
 			sprite.setTexture(tU);// change texture for up move
 		}
 	}
 
 	if (down) {
 		direction = 2;
-		moveSpeed = 0.02f;
 		prevX = playerPosX;
 		prevY = playerPosY;
 		if(canMove) {
 			//if not illegal move, then move
 			
-			playerPosY += moveSpeed;
+			playerPosY += moveSpeed * deltaTime.asSeconds();
 			sprite.setTexture(tD);// change texture for up move
 		}
 	}

@@ -550,63 +550,69 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 
 				switch (it->getDirection()) {
 				case 3: {
-					//only left true
+					// only left true
 					it->setPosX(it->getPosX() + (it->getSpeed() * deltaTime.asSeconds()));
 
-					if (tempX <= 0) {
-						it->setSpeed(it->getSpeed() * -1);
-						it->setDirection(1);
-						it->setPrevX(tempX);
-						it->setPrevY(tempY);
+					if (tempX > 0 && tempY + 1 < y) {
+						bool hitWallSide = !grid[tempY][tempX - 1] &&
+							it->getPosX() <= tempX + it->getEpsilon();
 
-					}
-					else {
-						bool hitWallSide = !grid[tempY][tempX - 1] && it->getPosX() <= tempX + it->getEpsilon();
-						bool hitEdge=grid[tempY][tempX - 1]==7 && it->getPosX() <= tempX + it->getEpsilon();
-						bool hitWallCorner = !grid[tempY + 1][tempX - 1] && (tempY + 1) != y - 1 &&
-							it->getPosX() <= tempX + it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
-						bool hitEdgeCorner=grid[tempY + 1][tempX - 1]==7 && (tempY + 1) != y - 1 &&
-							it->getPosX() <= tempX + it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
-						
-						if (hitWallSide || hitWallCorner|| hitEdge|| hitEdgeCorner) {
+						bool hitEdge = grid[tempY][tempX - 1] == 7 &&
+							it->getPosX() <= tempX + it->getEpsilon();
+
+						bool hitWallCorner = !grid[tempY + 1][tempX - 1] &&
+							it->getPosX() <= tempX + it->getEpsilon() &&
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+
+						bool hitEdgeCorner = grid[tempY + 1][tempX - 1] == 7 &&
+							it->getPosX() <= tempX + it->getEpsilon() &&
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+
+						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
 							it->setSpeed(it->getSpeed() * -1);
 							it->setDirection(1);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
 						}
 					}
+					else {
+						it->setPosX(1 + it->getEpsilon());
+						it->setSpeed(it->getSpeed() * -1);
+						it->setDirection(1);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
+					}
 					break;
-				}
+				}				
 				case 1: {
 					// only right true 
 					it->setPosX(it->getPosX() + (it->getSpeed() * deltaTime.asSeconds()));
-					if (tempX >= grid[0].size() - 1) {
-						it->setSpeed(it->getSpeed() * -1);
-						//logg << "Speed after: " << it->speed << std::endl;					
-						it->setDirection(3);
-						it->setPrevX(tempX);
-						it->setPrevY(tempY);
-
-					}
-					else {
-						bool hitWallSide = !grid[tempY][tempX + 1] && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon();
+					if (tempX< grid[0].size() - 1&& tempY + 1 < y) {
+						
+						bool hitWallSide = !grid[tempY][tempX + 1] && 
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon();
 						bool hitWallCorner = !grid[tempY + 1][tempX + 1] && (tempY + 1) != y - 1 &&
-							it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
-						bool hitEdge = grid[tempY][tempX + 1] ==7&& it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon();
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon() 
+							&& it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+						bool hitEdge = grid[tempY][tempX + 1] == 7 && 
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon();
 						bool hitEdgeCorner = grid[tempY + 1][tempX + 1] ==7&& (tempY + 1) != y - 1 &&
-							it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1 - it->getEpsilon() && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 1;
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon() 
+							&& it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							//logg << "hit" << std::endl;
-							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
-							//logg << "Speed before: " << it->speed << std::endl;
 							it->setSpeed(it->getSpeed() * -1);
-							//logg << "Speed after: " << it->speed << std::endl;					
 							it->setDirection(3);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
-
 						}
+					}
+					else {
+						it->setPosX(grid[0].size()-1 - it->getEpsilon()- (static_cast<float>(it->getWidthPx()) / 100.0f));
+						it->setSpeed(it->getSpeed() * -1);
+						it->setDirection(3);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
 					}
 					break;
 				}
@@ -614,34 +620,34 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 					// only up true
 					it->setPosY(it->getPosY() + (it->getSpeed() * deltaTime.asSeconds()));
 
-					if (tempY <= 0) {
-						it->setSpeed(it->getSpeed() * -1);
-						//logg << "Speed after: " << it->speed << std::endl;					
-						it->setDirection(2);
-						it->setPrevX(tempX);
-						it->setPrevY(tempY);
-
-					}
-					else {
-						bool hitWallSide = !grid[tempY - 1][tempX] && it->getPosY() <= tempY + it->getEpsilon();
+					if (tempY > 0&&tempX + 1 < x) {
+						
+						bool hitWallSide = !grid[tempY - 1][tempX] && 
+							it->getPosY() <= tempY + it->getEpsilon();
 						bool hitWallCorner = !grid[tempY - 1][tempX + 1] && (tempX + 1) != x - 1 &&
-							it->getPosY() <= tempY + it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
-						bool hitEdge = grid[tempY - 1][tempX] ==7&& it->getPosY() <= tempY + it->getEpsilon();
+							it->getPosY() <= tempY + it->getEpsilon() && 
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+						bool hitEdge = grid[tempY - 1][tempX] ==7&& 
+							it->getPosY() <= tempY + it->getEpsilon();
 						bool hitEdgeCorner = grid[tempY - 1][tempX + 1] ==7&& (tempX + 1) != x - 1 &&
-							it->getPosY() <= tempY + it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
+							it->getPosY() <= tempY + it->getEpsilon() && 
+							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
 
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							//logg << "hit" << std::endl;
-							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
-							//logg << "Speed before: " << it->speed << std::endl;
 							it->setSpeed(it->getSpeed() * -1);
-							//logg << "Speed after: " << it->speed << std::endl;					
 							it->setDirection(2);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
 
 						}
+					}
+					else {
+						it->setPosY(1 + it->getEpsilon());
+						it->setSpeed(it->getSpeed() * -1);
+						it->setDirection(2);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
 					}
 					break;
 				}
@@ -649,33 +655,33 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 					// only down true
 					it->setPosY(it->getPosY() + (it->getSpeed() * deltaTime.asSeconds()));
 
-					if (tempY >= grid.size() - 1) {
-						it->setSpeed(it->getSpeed() * -1);
-						//logg << "Speed after: " << it->speed << std::endl;
-						it->setDirection(0);
-						it->setPrevX(tempX);
-						it->setPrevY(tempY);
-
-					}
-					else {
-						bool hitWallSide = !grid[tempY + 2][tempX] && it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon();
+					if (tempY < grid.size() - 1&& tempX + 1 < x) {
+						
+						bool hitWallSide = !grid[tempY + 2][tempX] && 
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon();
 						bool hitWallCorner = !grid[tempY + 2][tempX + 1] && (tempX + 1) != x - 1 &&
-							it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
-						bool hitEdge = grid[tempY + 2][tempX] ==7&& it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon();
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon() 
+							&& it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+						bool hitEdge = grid[tempY + 2][tempX] == 7 && 
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon();
 						bool hitEdgeCorner = grid[tempY + 2][tempX + 1]==7 && (tempX + 1) != x - 1 &&
-							it->getPosY() + static_cast<float>(it->getHeightPx() / 100.0f) >= tempY + 2 - it->getEpsilon() && it->getPosX() + static_cast<float>(it->getWidthPx() / 100.0f) >= tempX + 1;
+							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon() 
+							&& it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							//logg << "hit" << std::endl;
-							//logg << "Side: " << hitWallSide << ", Corner: " << hitWallCorner << std::endl;
-							//logg << "Speed before: " << it->speed << std::endl;
 							it->setSpeed(it->getSpeed() * -1);
-							//logg << "Speed after: " << it->speed << std::endl;
 							it->setDirection(0);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
 
 						}
+					}
+					else {
+						it->setPosY(grid.size() - 1 - it->getEpsilon() - (static_cast<float>(it->getHeightPx()) / 100.0f));
+						it->setSpeed(it->getSpeed() * -1);
+						it->setDirection(0);
+						it->setPrevX(tempX);
+						it->setPrevY(tempY);
 					}
 					break;
 				}
