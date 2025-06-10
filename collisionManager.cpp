@@ -172,7 +172,11 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 
 	//only changes made to player are x and y
 	// can also reset map on level exit
-	int intPlayerX = static_cast<int>(player.getPosX());
+
+	float playerX = player.getPosX();
+	float playerY = player.getPosY();
+
+	int intPlayerX = static_cast<int>(playerX);
 	int intPlayerY = static_cast<int>(player.getPosY());
 	bool hitWall = false;
 	bool hitCorner = false;
@@ -186,21 +190,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 			(grid[intPlayerY + 1][intPlayerX - 1] == 7 && (intPlayerY + 1) != y - 1);
 
 		if (hitWall) { //if value zero; then cannot walk
-			//NOT legal move into gridMap[intPlayerX][intPlayerY]
-			//std::cout << "not legal LEFT" << std::endl;
-			//std::cout << "player pos: "<< getPosX() << " wall X: "<<intPlayerX << std::endl;
-			if (player.getPosX() <= intPlayerX + epsilon) {
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
+			if (playerX <= intPlayerX + epsilon) {
 				player.setPosX(intPlayerX + buffer);
 				player.setCanMove(false);
 			}
 		}
 		if (hitCorner) {
 			//check if feet touch
-			//std::cout << "intPlayerY + 1; " << intPlayerY + 1 << " getPosY: "<< getPosY() << " y: " << y << std::endl;
-			if (player.getPosX() <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-				//std::cout << "feet touch" << std::endl;
+			if (playerX <= intPlayerX + epsilon && playerY + .68 >= intPlayerY + 1) {
 				player.setPosX(intPlayerX + buffer);
 				player.setCanMove(false);
 			}
@@ -208,24 +205,21 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		//check for exit
 		if (player.getKeyCount() > 0) {
 			if (grid[intPlayerY][intPlayerX - 1] == 4) {
-				if (player.getPosX() <= intPlayerX + epsilon) {
-					//popGrid();
+				if (playerX <= intPlayerX + epsilon) {
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
 			}
 			if (grid[intPlayerY + 1][intPlayerX - 1] == 4 && (intPlayerY + 1) != y - 1) {
-				if (player.getPosX() <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-					//popGrid();
+				if (playerX <= intPlayerX + epsilon && playerY + .68 >= intPlayerY + 1) {
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
 			}
 		}
-		
-		//check for key
+		//check for key item
 		if (grid[intPlayerY][intPlayerX - 1] == 6) {
-			if (player.getPosX() <= intPlayerX + epsilon) {
+			if (playerX <= intPlayerX + epsilon) {
 				//popGrid();
 				grid[intPlayerY][intPlayerX - 1] = 1;
 				player.getKeys().clear();
@@ -233,8 +227,7 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 			}
 		}
 		if (grid[intPlayerY + 1][intPlayerX - 1] == 6 && (intPlayerY + 1) != y - 1) {
-			if (player.getPosX() <= intPlayerX + epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-				//popGrid();
+			if (playerX <= intPlayerX + epsilon && playerY + .68 >= intPlayerY + 1) {
 				grid[intPlayerY + 1][intPlayerX - 1] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
@@ -249,20 +242,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 
 		if (hitWall) {
 			//NOT legal move
-			//std::cout << "not legal RIGHT" << std::endl;
-			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
-				//std::cout << "pos: "<< getPosX()<< " pos + mod: " << getPosX() + .48 <<"intPlayerX: "<<intPlayerX<< "wall : " << intPlayerX + 1 << std::endl;
+			if (playerX + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
 				player.setPosX(intPlayerX + .52 - buffer); // 1-.48=.52; .52+.05 (buffer)
 				player.setCanMove(false);
 			}
 		}
 		if (hitCorner) {
 			//check if feet touch
-			//std::cout << "intPlayerY + 1; " << intPlayerY + 1 << " getPosY: "<< getPosY() << " y: " << y << std::endl;
-			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-				//std::cout << "feet touch" << std::endl;
+			if (playerX + .48 >= intPlayerX + 1 - epsilon && playerY + .68 >= intPlayerY + 1) {
 				player.setPosX(intPlayerX + .52 - buffer);
 				player.setCanMove(false);
 			}
@@ -270,15 +257,13 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		//check for exit
 		if (player.getKeyCount() > 0) {
 			if (grid[intPlayerY][intPlayerX + 1] == 4) {
-				if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
-					//popGrid();
+				if (playerX + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
 			}
 			if (grid[intPlayerY + 1][intPlayerX + 1] == 4 && (intPlayerY + 1) != y - 1) {
-				if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-					//popGrid();
+				if (playerX + .48 >= intPlayerX + 1 - epsilon && playerY + .68 >= intPlayerY + 1) {
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
@@ -286,16 +271,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		}
 		//check for key
 		if (grid[intPlayerY][intPlayerX + 1] == 6) {
-			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
-				//popGrid();
+			if (playerX + .48 >= intPlayerX + 1 - epsilon) {//player sprite is 48 pix wide devided by 100 squareSize
 				grid[intPlayerY][intPlayerX + 1] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
 		if (grid[intPlayerY + 1][intPlayerX + 1] == 6 && (intPlayerY + 1) != y - 1) {
-			if (player.getPosX() + .48 >= intPlayerX + 1 - epsilon && player.getPosY() + .68 >= intPlayerY + 1) {
-				//popGrid();
+			if (playerX + .48 >= intPlayerX + 1 - epsilon && playerY + .68 >= intPlayerY + 1) {
 				grid[intPlayerY + 1][intPlayerX + 1] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
@@ -310,37 +293,28 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 
 		if (hitWall) {
 			//NOT legal move
-			//std::cout << "not legal UP" << std::endl;
-			if (player.getPosY() <= intPlayerY + epsilon) {
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
+			if (playerY <= intPlayerY + epsilon) {
 				player.setPosY(intPlayerY + buffer);
 				player.setCanMove(false);
 			}
 		}
 		if (hitCorner) {
 			//NOT legal move
-			//std::cout << "not legal UP" << std::endl;
-			if (player.getPosY() <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
+			if (playerY <= intPlayerY + epsilon && playerX + .48 >= intPlayerX + 1) {
 				player.setPosY(intPlayerY + buffer);
 				player.setCanMove(false);
 			}
 		}
-
 		//check for exit
 		if (player.getKeyCount() > 0) {
 			if (grid[intPlayerY - 1][intPlayerX] == 4) {
-				if (player.getPosY() <= intPlayerY + epsilon) {
-					//popGrid();
+				if (playerY <= intPlayerY + epsilon) {
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
 			}
 			if (grid[intPlayerY - 1][intPlayerX + 1] == 4 && (intPlayerX + 1) != x - 1) {
-				if (player.getPosY() <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
-					//popGrid();
+				if (playerY <= intPlayerY + epsilon && playerX + .48 >= intPlayerX + 1) {
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
@@ -348,16 +322,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		}
 		//check for key
 		if (grid[intPlayerY - 1][intPlayerX] == 6) {
-			if (player.getPosY() <= intPlayerY + epsilon) {
-				//popGrid();
+			if (playerY <= intPlayerY + epsilon) {
 				grid[intPlayerY - 1][intPlayerX] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
 		if (grid[intPlayerY - 1][intPlayerX + 1] == 6 && (intPlayerX + 1) != x - 1) {
-			if (player.getPosY() <= intPlayerY + epsilon && player.getPosX() + .48 >= intPlayerX + 1) {
-				//popGrid();
+			if (playerY <= intPlayerY + epsilon && playerX + .48 >= intPlayerX + 1) {
 				grid[intPlayerY - 1][intPlayerX + 1] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
@@ -371,20 +343,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 			(grid[intPlayerY + 1][intPlayerX + 1] == 7 && (intPlayerX + 1) != x - 1);
 		if (hitWall) {
 			//NOT legal move
-			//std::cout << "not legal DOWN" << std::endl;
-			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
+			if (playerY + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
 				player.setPosY(intPlayerY + .32 - buffer);
 				player.setCanMove(false);
 			}
 		}
 		if (hitCorner) {
 			//NOT legal move
-			//std::cout << "not legal DOWN" << std::endl;
-			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
-				//NOT LEGAL MOVE
-				//std::cout << "NOT LEGAL LEFT" << std::endl;
+			if (playerY + .68 >= intPlayerY + 1 - epsilon && playerX + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
 				player.setPosY(intPlayerY + .32 - buffer);
 				player.setCanMove(false);
 			}
@@ -394,15 +360,13 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		if (player.getKeyCount() > 0) {
 
 			if (grid[intPlayerY + 1][intPlayerX] == 4) {
-				if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
-					//popGrid();
+				if (playerY + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
 			}
 			if (grid[intPlayerY + 1][intPlayerX + 1] == 4 && (intPlayerX + 1) != x - 1) {
-				if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
-					//popGrid();
+				if (playerY + .68 >= intPlayerY + 1 - epsilon && playerX + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
 					player.setKeyCount(player.getKeyCount() - 1);
 					startNewLevel(player, enemy);
 				}
@@ -410,16 +374,14 @@ void checkPlayerWall(Player& player, int exitX, int exitY, int direction, Enemy&
 		}
 		//check for key
 		if (grid[intPlayerY + 1][intPlayerX] == 6) {
-			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
-				//popGrid();
+			if (playerY + .68 >= intPlayerY + 1 - epsilon) { //player sprite is 68 pix wide
 				grid[intPlayerY + 1][intPlayerX] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
 			}
 		}
 		if (grid[intPlayerY + 1][intPlayerX + 1] == 6 && (intPlayerX + 1) != x - 1) {
-			if (player.getPosY() + .68 >= intPlayerY + 1 - epsilon && player.getPosX() + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
-				//popGrid();
+			if (playerY + .68 >= intPlayerY + 1 - epsilon && playerX + .48 >= intPlayerX + 1) { //player sprite is 68 pix wide
 				grid[intPlayerY + 1][intPlayerX + 1] = 1;
 				player.getKeys().clear();
 				player.setKeyCount(player.getKeyCount() + 1);
@@ -437,6 +399,7 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 	float pY = player.getPosY() * squareSize;
 	float pH = player.getSprite().getLocalBounds().height;
 	float pW = player.getSprite().getLocalBounds().width;
+	int playerDir = player.getDirection();
 
 	float eX,eY,eH,eW;
 
@@ -445,6 +408,7 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 		eY = it->getPosY() * squareSize;
 		eH = it->getHeightPx();
 		eW = it->getWidthPx();
+		int enemyDir = it->getDirection();
 
 		if (pointInBox(pX, pY, pH, pW, eX, eY, eH, eW)) {
 			player.getSprite().setColor(sf::Color::Red);
@@ -455,8 +419,6 @@ void playerAndEnemyCheck(Player& player, Enemy& enemy, sf::Time deltaTime) {
 			player.setFlashTimer(0.30f); // flash for 150 ms
 			
 			float knockback;
-			int playerDir = player.getDirection();
-			int enemyDir = it->getDirection();
 			int pushDir = enemyDir;
 
 			// Reverse if both are moving in same direction
@@ -717,6 +679,7 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 		float fBallY = it->getY();
 		float fW = it->getWidth() / 100;
 		float fH = it->getHeight() / 100;
+		float fBallEpsilon = it->getEpsilon();
 
 		int tempX = static_cast<int>(fBallX);
 		int tempY = static_cast<int>(fBallY);
@@ -728,9 +691,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY][tempX - 1] == 0 && fBallX <= tempX + it->getEpsilon());
+				bool hitWall = (grid[tempY][tempX - 1] == 0 && fBallX <= tempX + fBallEpsilon);
 				bool hitCorner = (grid[tempY + 1][tempX - 1] == 0 && tempY + 1 != y - 1 &&
-					fBallX <= tempX + it->getEpsilon() && fBallY + .64f >= tempY + 1);
+					fBallX <= tempX + fBallEpsilon && fBallY + .64f >= tempY + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -754,9 +717,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY][tempX + 1] == 0 && fBallX + .645f >= tempX + 1 - it->getEpsilon());
+				bool hitWall = (grid[tempY][tempX + 1] == 0 && fBallX + .645f >= tempX + 1 - fBallEpsilon);
 				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempY + 1 != y - 1 &&
-					fBallX + .645f >= tempX + 1 - it->getEpsilon() && fBallY + .64f >= tempY + 1);
+					fBallX + .645f >= tempX + 1 - fBallEpsilon && fBallY + .64f >= tempY + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -780,9 +743,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY - 1][tempX] == 0 && fBallY <= tempY + it->getEpsilon());
+				bool hitWall = (grid[tempY - 1][tempX] == 0 && fBallY <= tempY + fBallEpsilon);
 				bool hitCorner = (grid[tempY - 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
-					fBallY <= tempY + it->getEpsilon() && fBallX + .645f >= tempX + 1);
+					fBallY <= tempY + fBallEpsilon && fBallX + .645f >= tempX + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
@@ -807,9 +770,9 @@ void updateFireBalls(Player& player, Enemy& enemy) {
 				eraseFireball = true;
 			}
 			else {
-				bool hitWall = (grid[tempY + 1][tempX] == 0 && fBallY + .64f >= tempY + 1 - it->getEpsilon());
+				bool hitWall = (grid[tempY + 1][tempX] == 0 && fBallY + .64f >= tempY + 1 - fBallEpsilon);
 				bool hitCorner = (grid[tempY + 1][tempX + 1] == 0 && tempX + 1 != x - 1 &&
-					fBallY + .64f >= tempY + 1 - it->getEpsilon() && fBallX + .645f >= tempX + 1);
+					fBallY + .64f >= tempY + 1 - fBallEpsilon && fBallX + .645f >= tempX + 1);
 				if (hitWall) {
 					eraseFireball = true;
 					if (player.getSpell() == 2) {
