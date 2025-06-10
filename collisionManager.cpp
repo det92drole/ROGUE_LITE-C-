@@ -518,25 +518,31 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 	//only changes to enemies is direction, speed, x, y
 	
 	auto& allEnemies = enemy.getMerge();
+	float playerX = player.getPosX();
+	float playerY = player.getPosY();
+	float playerSpriteW = player.getSprite().getGlobalBounds().width;
+	float playerSpriteH = player.getSprite().getGlobalBounds().height;
 
 	if (allEnemies.size() != 0) {
 		if (enemy.getEnemies()[0].getAgro()) { //if enemy agro; movement directed to player
 			for (auto* it :allEnemies) {
-				int tempX = static_cast<int>(it->getPosX());
-				int tempY = static_cast<int>(it->getPosY());
+				float ePosX = it->getPosX();
+				float ePosY = it->getPosY();
+				int tempX = static_cast<int>(ePosX);
+				int tempY = static_cast<int>(ePosY);
 				it->setSpeed(0); //movement no longer determined by speed
 
-				float xT = player.getPosX() + (((player.getSprite().getGlobalBounds().width / 100.0f) / 2.0f) - ((it->getWidthPx() / 100.0f) / 2.0f));
-				float yT = player.getPosY() + (((player.getSprite().getGlobalBounds().height / 100.0f) / 2.0f) - ((it->getHeightPx() / 100.0f) / 2.0f));
-				float vecx = xT - it->getPosX();
-				float vecy = yT - it->getPosY();
+				float xT = playerX + (((playerSpriteW / 100.0f) / 2.0f) - ((it->getWidthPx() / 100.0f) / 2.0f));
+				float yT = playerY + (((playerSpriteH / 100.0f) / 2.0f) - ((it->getHeightPx() / 100.0f) / 2.0f));
+				float vecx = xT - ePosX;
+				float vecy = yT - ePosY;
 				float hypotenuse = std::hypot(vecx, vecy);
 
 				if (hypotenuse != 0) {
 					float dirX = vecx / hypotenuse;
 					float dirY = vecy / hypotenuse;
-					it->setPosX(it->getPosX() + dirX*deltaTime.asSeconds());
-					it->setPosY(it->getPosY() + dirY*deltaTime.asSeconds());
+					it->setPosX(ePosX + dirX*deltaTime.asSeconds());
+					it->setPosY(ePosY + dirY*deltaTime.asSeconds());
 					//std::cout << "dirx: " << dirX << " dirY: " << dirY << std::endl;
 				}
 				//std::cout <<"enemy id: "<<it->getID()<< " enemy x: " << it->getPosX() << " enemy Y: " << it->getPosY() << std::endl;
@@ -545,39 +551,45 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 		}
 		else { //normal movement
 			for (auto* it : allEnemies) {
-				int tempX = static_cast<int>(it->getPosX());
+				float ePosX = it->getPosX();
+				float ePosY = it->getPosY();
+				float eEpsilon = it->getEpsilon();
+				float eSpeed = it->getSpeed();
+				float eH = it->getHeightPx();
+				float eW = it->getWidthPx();
+				int tempX = static_cast<int>(ePosX);
 				int tempY = static_cast<int>(it->getPosY());
 
 				switch (it->getDirection()) {
 				case 3: {
 					// only left true
-					it->setPosX(it->getPosX() + (it->getSpeed() * deltaTime.asSeconds()));
+					it->setPosX(ePosX + (eSpeed * deltaTime.asSeconds()));
 
 					if (tempX > 0 && tempY + 1 < y) {
 						bool hitWallSide = !grid[tempY][tempX - 1] &&
-							it->getPosX() <= tempX + it->getEpsilon();
+							ePosX <= tempX + eEpsilon;
 
 						bool hitEdge = grid[tempY][tempX - 1] == 7 &&
-							it->getPosX() <= tempX + it->getEpsilon();
+							ePosX <= tempX + eEpsilon;
 
 						bool hitWallCorner = !grid[tempY + 1][tempX - 1] &&
-							it->getPosX() <= tempX + it->getEpsilon() &&
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+							ePosX <= tempX + eEpsilon &&
+							ePosY + static_cast<float>(eH / 100.0f) >= tempY + 1;
 
 						bool hitEdgeCorner = grid[tempY + 1][tempX - 1] == 7 &&
-							it->getPosX() <= tempX + it->getEpsilon() &&
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+							ePosX <= tempX + eEpsilon &&
+							ePosY + static_cast<float>(eH / 100.0f) >= tempY + 1;
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							it->setSpeed(it->getSpeed() * -1);
+							it->setSpeed(eSpeed * -1);
 							it->setDirection(1);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
 						}
 					}
 					else {
-						it->setPosX(1 + it->getEpsilon());
-						it->setSpeed(it->getSpeed() * -1);
+						it->setPosX(1 + eEpsilon);
+						it->setSpeed(eSpeed * -1);
 						it->setDirection(1);
 						it->setPrevX(tempX);
 						it->setPrevY(tempY);
@@ -586,30 +598,30 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 				}				
 				case 1: {
 					// only right true 
-					it->setPosX(it->getPosX() + (it->getSpeed() * deltaTime.asSeconds()));
+					it->setPosX(ePosX + (eSpeed * deltaTime.asSeconds()));
 					if (tempX< grid[0].size() - 1&& tempY + 1 < y) {
 						
 						bool hitWallSide = !grid[tempY][tempX + 1] && 
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon();
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1 - eEpsilon;
 						bool hitWallCorner = !grid[tempY + 1][tempX + 1] && (tempY + 1) != y - 1 &&
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon() 
-							&& it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1 - eEpsilon
+							&& ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 1;
 						bool hitEdge = grid[tempY][tempX + 1] == 7 && 
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon();
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1 - eEpsilon;
 						bool hitEdgeCorner = grid[tempY + 1][tempX + 1] ==7&& (tempY + 1) != y - 1 &&
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1 - it->getEpsilon() 
-							&& it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 1;
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1 - eEpsilon
+							&& ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 1;
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							it->setSpeed(it->getSpeed() * -1);
+							it->setSpeed(eSpeed * -1);
 							it->setDirection(3);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
 						}
 					}
 					else {
-						it->setPosX(grid[0].size()-1 - it->getEpsilon()- (static_cast<float>(it->getWidthPx()) / 100.0f));
-						it->setSpeed(it->getSpeed() * -1);
+						it->setPosX(grid[0].size()-1 - eEpsilon - (static_cast<float>(eW) / 100.0f));
+						it->setSpeed(eSpeed * -1);
 						it->setDirection(3);
 						it->setPrevX(tempX);
 						it->setPrevY(tempY);
@@ -618,24 +630,24 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 				}
 				case 0: {
 					// only up true
-					it->setPosY(it->getPosY() + (it->getSpeed() * deltaTime.asSeconds()));
+					it->setPosY(ePosY + (eSpeed * deltaTime.asSeconds()));
 
 					if (tempY > 0&&tempX + 1 < x) {
 						
 						bool hitWallSide = !grid[tempY - 1][tempX] && 
-							it->getPosY() <= tempY + it->getEpsilon();
+							ePosY <= tempY + eEpsilon;
 						bool hitWallCorner = !grid[tempY - 1][tempX + 1] && (tempX + 1) != x - 1 &&
-							it->getPosY() <= tempY + it->getEpsilon() && 
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+							ePosY <= tempY + eEpsilon &&
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1;
 						bool hitEdge = grid[tempY - 1][tempX] ==7&& 
-							it->getPosY() <= tempY + it->getEpsilon();
+							ePosY <= tempY + eEpsilon;
 						bool hitEdgeCorner = grid[tempY - 1][tempX + 1] ==7&& (tempX + 1) != x - 1 &&
-							it->getPosY() <= tempY + it->getEpsilon() && 
-							it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+							ePosY <= tempY + eEpsilon &&
+							ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1;
 
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							it->setSpeed(it->getSpeed() * -1);
+							it->setSpeed(eSpeed * -1);
 							it->setDirection(2);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
@@ -643,8 +655,8 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						}
 					}
 					else {
-						it->setPosY(1 + it->getEpsilon());
-						it->setSpeed(it->getSpeed() * -1);
+						it->setPosY(1 + eEpsilon);
+						it->setSpeed(eSpeed * -1);
 						it->setDirection(2);
 						it->setPrevX(tempX);
 						it->setPrevY(tempY);
@@ -653,23 +665,23 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 				}
 				case 2: {
 					// only down true
-					it->setPosY(it->getPosY() + (it->getSpeed() * deltaTime.asSeconds()));
+					it->setPosY(ePosY + (eSpeed * deltaTime.asSeconds()));
 
 					if (tempY < grid.size() - 1&& tempX + 1 < x) {
 						
 						bool hitWallSide = !grid[tempY + 2][tempX] && 
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon();
+							ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 2 - eEpsilon;
 						bool hitWallCorner = !grid[tempY + 2][tempX + 1] && (tempX + 1) != x - 1 &&
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon() 
-							&& it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+							ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 2 - eEpsilon
+							&& ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1;
 						bool hitEdge = grid[tempY + 2][tempX] == 7 && 
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon();
+							ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 2 - eEpsilon;
 						bool hitEdgeCorner = grid[tempY + 2][tempX + 1]==7 && (tempX + 1) != x - 1 &&
-							it->getPosY() + (static_cast<float>(it->getHeightPx()) / 100.0f) >= tempY + 2 - it->getEpsilon() 
-							&& it->getPosX() + (static_cast<float>(it->getWidthPx()) / 100.0f) >= tempX + 1;
+							ePosY + (static_cast<float>(eH) / 100.0f) >= tempY + 2 - eEpsilon
+							&& ePosX + (static_cast<float>(eW) / 100.0f) >= tempX + 1;
 
 						if (hitWallSide || hitWallCorner || hitEdge || hitEdgeCorner) {
-							it->setSpeed(it->getSpeed() * -1);
+							it->setSpeed(eSpeed * -1);
 							it->setDirection(0);
 							it->setPrevX(tempX);
 							it->setPrevY(tempY);
@@ -677,8 +689,8 @@ void checkEnemyWall(Enemy& enemy, sf::Time deltaTime, Player& player) {
 						}
 					}
 					else {
-						it->setPosY(grid.size() - 1 - it->getEpsilon() - (static_cast<float>(it->getHeightPx()) / 100.0f));
-						it->setSpeed(it->getSpeed() * -1);
+						it->setPosY(grid.size() - 1 - eEpsilon - (static_cast<float>(eH) / 100.0f));
+						it->setSpeed(eSpeed * -1);
 						it->setDirection(0);
 						it->setPrevX(tempX);
 						it->setPrevY(tempY);
